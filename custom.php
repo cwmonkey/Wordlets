@@ -8,12 +8,16 @@ $wordlet_info = array(
 		'name' => 'title',
 		'title' => 'Page Title',
 		'description' => 'description',
+		'configured' => true,
 		'configs' => array(
 			array(
 				'name' => 'value',
 				'title' => 'Value',
 				'default' => 'My Site',
 				'description' => 'Plain Text',
+				'format' => 'text',
+				'multi' => false,
+				'wordlet' => true,
 			),
 		),
 		'values' => array(
@@ -22,26 +26,48 @@ $wordlet_info = array(
 			),
 		),
 	),
+	'body' => array(
+		'name' => 'body',
+		'title' => '',
+		'description' => '',
+		'configured' => false,
+		'configs' => array(
+		),
+		'values' => array(
+		),
+	),
 	'tiles' => array(
 		'name' => 'tiles',
+		'title' => 'SNAP tiles',
+		'description' => '',
+		'configured' => true,
 		'configs' => array(
 			array(
 				'name' => 'name',
 				'title' => 'Query string name',
 				'default' => '',
 				'description' => '',
+				'format' => 'text',
+				'multi' => false,
+				'wordlet' => false,
 			),
 			array(
 				'name' => 'image',
 				'title' => 'Image URL',
 				'default' => '',
 				'description' => '100x50',
+				'format' => 'text',
+				'multi' => false,
+				'wordlet' => false,
 			),
 			array(
 				'name' => 'href',
 				'title' => 'Link URL',
 				'default' => '',
 				'description' => '',
+				'format' => 'text',
+				'multi' => false,
+				'wordlet' => false,
 			),
 		),
 		'values' => array(
@@ -79,6 +105,8 @@ function wl($name) {
 <p><?=w('title')?></p>
 
 <p><?=w('tiles')?></p>
+
+<p><?=w('body')?></p>
 
 <? foreach ( wl('tiles') as $w ): ?>
 	<p>

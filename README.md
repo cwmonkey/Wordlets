@@ -1,4 +1,0 @@
-Wordlets
-========
-
-Simple cms thing

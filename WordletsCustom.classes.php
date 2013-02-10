@@ -6,7 +6,8 @@ class WordletsCustom extends Wordlets {
 
 	public static function getOne($attrs) {
 		if ( isset(self::$_ones[$attrs['name']]) ) return self::$_ones[$attrs['name']];
-		self::$_ones[$attrs['name']] = new WordletItemCustom($attrs['configs'], $attrs['values'][0]);
+		$values = ( count($attrs['values']) ) ? $attrs['values'][0] : array();
+		self::$_ones[$attrs['name']] = new WordletItemCustom($attrs['name'], $attrs['configs'], $values);
 		return self::$_ones[$attrs['name']];
 	}
 
@@ -14,7 +15,7 @@ class WordletsCustom extends Wordlets {
 		if ( isset(self::$_manys[$attrs['name']]) ) return self::$_manys[$attrs['name']];
 		$array = array();
 		foreach ( $attrs['values'] as $vs ) {
-			$array[] = new WordletItemCustom($attrs['configs'], $vs);
+			$array[] = new WordletItemCustom($attrs['name'], $attrs['configs'], $vs);
 		}
 
 		self::$_manys[$attrs['name']] = new WordletItems($array);
@@ -24,48 +25,39 @@ class WordletsCustom extends Wordlets {
 
 // Objects passed to the front end
 class WordletItemCustom extends WordletItem {
-	private $_values;
-	private $_configs;
+	private $defaults = array(
+		'format' => 'text',
+		'multi' => false,
+		'wordlet' => true,
+	);
 
-	public function __construct($configs, $values) {
-		$this->_configs = $configs;
-		foreach ( $configs as $key => $config ) {
-			$this->_values[$config['name']] = $values[$key];
-		}
-	}
+	public function preProcess($value, $name) {
+		$config = ( isset($this->_configs[$name]) ) ? $this->_configs[$name] : array();
+		$config += $this->defaults;
 
-	public function __get($name) {
-		return $this->get($name);
-	}
-
-	public function get($name, $preprocess = true) {
-		$val = '';
-		if ( isset($this->_values[$name]) ) {
-			$val = $this->_values[$name];
-		}
-
-		if ( $preprocess ) return $this->preProcess($val);
-
-		return $val;
-	}
-
-	public function __call($name, $parameters) {
-		$val = $this->get($name, false);
-
-		return call_user_method_array('preProcess', $this, $parameters);
-	}
-
-	public function __toString() {
-		$val = '';
-		foreach ( $this->_values as $value ) {
-			$val = $value . '';
-			break;
+		if ( !$this->_configured ) {
+			$value = '<span class="wordlet_configure">Configure ' . $this->_name . '</span>';
+		} else {
+			switch ( $config['format'] ) {
+				case 'text':
+					$value = strip_tags($value);
+					break;
+				case 'simple-html':
+					$value = strip_tags($value, '<a><b><i><strong><em><br><br/><img>');
+					break;
+				case 'full-html':
+					$value = strip_tags($value, '<a><b><i><strong><em><br><br/><img><p><ul><ol><li><blockquote><hr><hr/><h1><h2><h3><h4><h5><h6>');
+					break;
+			}
 		}
 
-		return $this->preProcess($val);
-	}
+		if ( $config['wordlet'] ) {
+			$edit = ' data-edit="/edit"';
+			$configure = ' data-configure="/configure"';
+			$tag = (( $config['multi'] ) ? 'div' : 'span');
+			$value = '<' . $tag . ' class="wordlet"' . $edit . $configure . '>' . $value . '</' . $tag . '>';
+		}
 
-	public function preProcess($value) {
 		return $value;
 	}
 }

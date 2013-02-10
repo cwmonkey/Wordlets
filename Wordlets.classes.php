@@ -6,7 +6,8 @@ class Wordlets {
 
 	public static function getOne($attrs) {
 		if ( isset(self::$_ones[$attrs['name']]) ) return self::$_ones[$attrs['name']];
-		self::$_ones[$attrs['name']] = new WordletItem($attrs['configs'], $attrs['values'][0]);
+		$values = ( count($attrs['values']) ) ? $attrs['values'][0] : array();
+		self::$_ones[$attrs['name']] = new WordletItem($attrs['name'], $attrs['configs'], $values);
 		return self::$_ones[$attrs['name']];
 	}
 
@@ -24,13 +25,18 @@ class Wordlets {
 
 // Objects passed to the front end
 class WordletItem {
-	private $_values;
-	private $_configs;
+	protected $_values = array();
+	protected $_configs = array();
+	protected $_configured = false;
+	protected $_name;
 
-	public function __construct($configs, $values) {
-		$this->_configs = $configs;
+	public function __construct($name, $configs, $values) {
+		if ( count($configs) ) $this->_configured = true;
+		$this->_name = $name;
+
 		foreach ( $configs as $key => $config ) {
 			$this->_values[$config['name']] = $values[$key];
+			$this->_configs[$config['name']] = $config;
 		}
 	}
 
@@ -44,7 +50,7 @@ class WordletItem {
 			$val = $this->_values[$name];
 		}
 
-		if ( $preprocess ) return $this->preProcess($val);
+		if ( $preprocess ) return $this->preProcess($val, $name);
 
 		return $val;
 	}
@@ -52,20 +58,21 @@ class WordletItem {
 	public function __call($name, $parameters) {
 		$val = $this->get($name, false);
 
+		array_unshift($parameters, $name);
+		array_unshift($parameters, $val);
+
 		return call_user_method_array('preProcess', $this, $parameters);
 	}
 
 	public function __toString() {
-		$val = '';
-		foreach ( $this->_values as $value ) {
-			$val = $value . '';
-			break;
+		foreach ( $this->_values as $key => $value ) {
+			return $this->get($key);
 		}
 
-		return $this->preProcess($val);
+		return $this->get(null);
 	}
 
-	public function preProcess($value) {
+	public function preProcess($value, $name) {
 		return $value;
 	}
 }

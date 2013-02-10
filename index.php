@@ -16,6 +16,13 @@ $wordlet_info = array(
 			),
 		),
 	),
+	'body' => array(
+		'name' => 'body',
+		'configs' => array(
+		),
+		'values' => array(
+		),
+	),
 	'tiles' => array(
 		'name' => 'tiles',
 		'configs' => array(

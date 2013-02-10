@@ -8,7 +8,6 @@ $wordlet_info = array(
 		'name' => 'title',
 		'title' => 'Page Title',
 		'description' => 'description',
-		'configured' => true,
 		'configs' => array(
 			array(
 				'name' => 'value',
@@ -30,7 +29,15 @@ $wordlet_info = array(
 		'name' => 'body',
 		'title' => '',
 		'description' => '',
-		'configured' => false,
+		'configs' => array(
+		),
+		'values' => array(
+		),
+	),
+	'toes' => array(
+		'name' => 'toes',
+		'title' => '',
+		'description' => '',
 		'configs' => array(
 		),
 		'values' => array(
@@ -40,7 +47,6 @@ $wordlet_info = array(
 		'name' => 'tiles',
 		'title' => 'SNAP tiles',
 		'description' => '',
-		'configured' => true,
 		'configs' => array(
 			array(
 				'name' => 'name',
@@ -97,16 +103,31 @@ function w($name) {
 
 function wl($name) {
 	global $wordlet_info;
-	return WordletsCustom::getMany($wordlet_info[$name]);
+	if ( count($wordlet_info[$name]['values']) ) {
+		return WordletsCustom::getMany($wordlet_info[$name]);
+	} else {
+		echo WordletsCustom::getOne($wordlet_info[$name]);
+		return array();
+	}
 }
 
 ?>
 
-<p><?=w('title')?></p>
+<p>title: <?=w('title')?></p>
 
-<p><?=w('tiles')?></p>
+<p>tiles: <?=w('tiles')?></p>
 
-<p><?=w('body')?></p>
+<p>body: <?=w('body')?></p>
+
+<h4>toes:</h4>
+
+<? foreach ( wl('toes') as $w ): ?>
+	<p>
+		<?=$w?>
+	</p>
+<? endforeach ?>
+
+<h4>tiles:</h4>
 
 <? foreach ( wl('tiles') as $w ): ?>
 	<p>
@@ -114,7 +135,7 @@ function wl($name) {
 	</p>
 <? endforeach ?>
 
-<p>Selected:</p>
+<h4>Selected:</h4>
 
 <? if ( ($w = wl('tiles')->find('name', 'bob')) ): ?>
 	<p>

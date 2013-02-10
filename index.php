@@ -78,3 +78,7 @@ function wl($name) {
 		<a href="<?=$w->href?>"><img src="<?=$w->image?>"/></a>
 	</p>
 <? endif ?>
+
+<hr/>
+
+<?highlight_file(__FILE__)?>

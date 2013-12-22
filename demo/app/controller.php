@@ -22,6 +22,16 @@ function w() {
 	}
 }
 
+function wa($wordlet) {
+	try {
+		$obj = ( is_object($wordlet) ) ? $wordlet : w($wordlet, false);
+		if ( WordletsMySql::$ShowMarkup ) return $obj->HtmlAttrs();
+		return '';
+	} catch (Exception $e) {
+		return '';
+	}
+}
+
 $page = @$_GET['page'];
 if ( $page == 'form' ) {
 	$image = new WordletsObject(

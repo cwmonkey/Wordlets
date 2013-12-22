@@ -10,27 +10,35 @@ class WordletsBase {
 		self::$Pages[$object->Page][$object->Name] = $object;
 	}
 
-	public static function GetOne($name) {
+	public static function GetOne($name, $echo = true) {
 		$keys = array_keys(self::$Pages);
 		for ( $i = count($keys) - 1; $i >= 0; $i-- ) {
 			$key = $keys[$i];
 			$page = self::$Pages[$key];
-			if ( isset($page[$name]) ) return $page[$name];
+			if ( isset($page[$name]) ) {
+				$page[$name]->ShowMarkup = self::$ShowMarkup;
+				return $page[$name];
+			}
 		}
 
 		// Make a blank wordlet
-		$page[$name] = new WordletsObject(self::$CurrentPage, $name);
+		$wordlet = new WordletsObject(self::$CurrentPage, $name, null, null, self::$ShowMarkup);
+
+		if ( self::$ShowMarkup && !$wordlet->Configured && $echo ) echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
+
+		$page[$name] = $wordlet;
 
 		return $page[$name];
 	}
 }
 
-class WordletsObject implements Iterator {
+class WordletsObject implements Iterator, Countable {
 	public $Values = array();
 	public $Attrs = array();
 	public $Page;
 	public $Name;
 	public $ShowMarkup;
+	public $Configured = false;
 
 	public $DefaultConfig = array(
 		'type' => 'single',
@@ -38,6 +46,12 @@ class WordletsObject implements Iterator {
 		'order' => 0,
 		'show_markup' => 1,
 	);
+
+	// Countable
+	public function count() {
+		$var = count($this->Values);
+		return $var;
+	}
 
 	// Iterator
 	public $Current = null;
@@ -67,7 +81,7 @@ class WordletsObject implements Iterator {
 	}
 
 	// The rest
-	public function __construct($page, $name, $attrs = array('single' => array()), $values = array(), $show_markup = false) {
+	public function __construct($page, $name, $attrs = null, $values = null, $show_markup = false) {
 		$this->Page = $page;
 		$this->Name = $name;
 		$this->Attrs = $attrs;
@@ -78,6 +92,8 @@ class WordletsObject implements Iterator {
 			$this->Values[] = $v;
 		}*/
 		$this->Values = $values;
+		$this->length = count($values);
+		if ( $attrs ) $this->Configured = true;
 	}
 
 	public function __get($name) {
@@ -85,11 +101,7 @@ class WordletsObject implements Iterator {
 	}
 
 	public function __call($name, $show_markup = null) {
-		if ( $this->Current ) {
-			$values = $this->Current;
-		} else {
-			$values = $this->Values[0];
-		}
+		$values = $this->GetCurrent();
 
 		if ( !isset($values[$name]) ) {
 			//$this->Values[$name] = new WordletsValue(null, $this->DefaultConfig);
@@ -114,21 +126,32 @@ class WordletsObject implements Iterator {
 	}
 
 	public function __toString() {
-		if ( $this->Current ) {
-			$values = $this->Current;
-		} else {
-			$values = $this->Values[0];
+		$values = $this->GetCurrent();
+
+		if ( is_array($values) ) {
+			foreach ( $values as $key => $value ) {
+				return $this->__get($key) . '';
+			}
 		}
 
-		foreach ( $values as $key => $value ) {
-			return $this->__get($key) . '';
-		}
-
-		if ( $this->ShowMarkup ) {
+		return '';
+		/*if ( $this->ShowMarkup ) {
 			return '<span ' . $this->Attrs() . '></span>';
 		} else {
 			return '';
+		}*/
+	}
+
+	public function GetCurrent() {
+		if ( $this->Current ) {
+			$var = $this->Current;
+		} elseif ( isset($this->Values[0]) ) {
+			$var = $this->Values[0];
+		} else {
+			$var = null;
 		}
+
+		return $var;
 	}
 
 	public function Value($value, $config) {
@@ -160,21 +183,9 @@ class WordletsObject implements Iterator {
 
 	public function HtmlAttrs($show_class = true) {
 		if ( !$this->ShowMarkup ) return '';
-		if ( $this->Current ) {
-			$values = $this->Current;
-		} else {
-			$values = $this->Values[0];
-		}
-		$configured = false;
-		foreach ( $values as $key => $value ) {
-			if ($value !== null) {
-				$configured = true;
-				break;
-			}
-		}
 
-		$attrs = 'data-wordlet-configured="' . ($configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
-		if ( $show_class ) $attrs = ' class="wordlet wordlet_' . ($configured?'':'un') . 'configured" ' . $attrs;
+		$attrs = 'data-wordlet-configured="' . ($this->Configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
+		if ( $show_class ) $attrs = ' class="wordlet wordlet_' . ($this->Configured?'':'un') . 'configured" ' . $attrs;
 		return $attrs;
 	}
 }

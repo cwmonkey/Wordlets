@@ -27,7 +27,10 @@ class WordletsBase {
 		// Make a blank wordlet
 		$wordlet = new Wobject($this->currentPage, $name, null, null, $this->showMarkup);
 
-		if ( $this->showMarkup && !$wordlet->Configured && $echo ) echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
+		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
+			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
+			return null;
+		}
 
 		$page[$name] = $wordlet;
 

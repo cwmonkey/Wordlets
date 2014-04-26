@@ -1,22 +1,21 @@
 <?php
 
-include('../classes/Wordlets.class.php');
-include('WordletsMySql.class.php');
+include('../classes/Wordlets/Wordlets.class.php');
+include('../classes/Wordlets/WordletsMySql.class.php');
 include('config.local.php');
 
-WordletsMySql::OpenDb($dbaddr, $dbuser, $dbpass, $dbname, 'wordlet_');
-$admin = @$_GET['admin'];
-if ( $admin ) WordletsMySql::$ShowMarkup = true;
-WordletsMySql::LoadObjects('_site', 'index');
-
 class Site {
-	public static $WordletClass = 'WordletsMySql';
+	public static $WordletClass = '\Wordlets\WordletsMySql';
+	public static $Wordlets;
 }
+
+Site::$Wordlets = $wordlets = new \Wordlets\WordletsMySql('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass, 'wordlet_');
+
 // Making shorthand functions for the template to use
 function w() {
 	$func_get_args = func_get_args();
 	try {
-		return call_user_func_array(Site::$WordletClass . '::GetOne', $func_get_args);
+		return call_user_func_array(array(Site::$Wordlets, 'getOne'), $func_get_args);
 	} catch (Exception $e) {
 		return '';
 	}
@@ -25,7 +24,7 @@ function w() {
 function wa($wordlet) {
 	try {
 		$obj = ( is_object($wordlet) ) ? $wordlet : w($wordlet, false);
-		if ( WordletsMySql::$ShowMarkup ) return $obj->HtmlAttrs();
+		if ( Site::$Wordlets->showMarkup ) return $obj->HtmlAttrs();
 		return '';
 	} catch (Exception $e) {
 		return '';
@@ -34,7 +33,7 @@ function wa($wordlet) {
 
 $page = @$_GET['page'];
 if ( $page == 'form' ) {
-	$image = new WordletsObject(
+	$image = new \Wordlets\Wobject(
 		'index',
 		'Image',
 		array(
@@ -58,9 +57,9 @@ if ( $page == 'form' ) {
 			),
 		)
 	);
-	WordletsMySql::SaveObject($image);
+	$wordlets->saveObject($image);
 
-	$title = new WordletsObject(
+	$title = new \Wordlets\Wobject(
 		'index',
 		'Title',
 		array(
@@ -77,9 +76,9 @@ if ( $page == 'form' ) {
 			),
 		)
 	);
-	WordletsMySql::SaveObject($title);
+	$wordlets->saveObject($title);
 
-	$subtitle = new WordletsObject(
+	$subtitle = new \Wordlets\Wobject(
 		'index',
 		'SubTitle',
 		array(
@@ -96,9 +95,9 @@ if ( $page == 'form' ) {
 			),
 		)
 	);
-	WordletsMySql::SaveObject($subtitle);
+	$wordlets->saveObject($subtitle);
 
-	$list = new WordletsObject(
+	$list = new \Wordlets\Wobject(
 		'index',
 		'List',
 		array(
@@ -124,11 +123,15 @@ if ( $page == 'form' ) {
 			),
 		)
 	);
-	WordletsMySql::SaveObject($list);
+	$wordlets->saveObject($list);
 
 	//include('form.php');
 	//header('Location: .');
 } else {
+	$admin = @$_GET['admin'];
+	if ( $admin ) $wordlets->showMarkup = true;
+	$wordlets->loadObjects('_site', 'index');
+
 	include('index.tpl.php');
 }
 

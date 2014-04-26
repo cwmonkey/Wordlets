@@ -1,30 +1,33 @@
 <?php
 
-class WordletsBase {
-	public static $Pages = array();
-	public static $ShowMarkup = false;
-	public static $CurrentPage;
+namespace Wordlets;
 
-	public static function SetObject($object) {
-		if ( !isset(self::$Pages[$object->Page]) ) self::$Pages[$object->Page] = array();
-		self::$Pages[$object->Page][$object->Name] = $object;
+class WordletsBase {
+	public $showMarkup = false;
+	public $currentPage;
+
+	public $pages = array();
+
+	public function setObject($object) {
+		if ( !isset($this->pages[$object->Page]) ) $this->pages[$object->Page] = array();
+		$this->pages[$object->Page][$object->Name] = $object;
 	}
 
-	public static function GetOne($name, $echo = true) {
-		$keys = array_keys(self::$Pages);
+	public function getOne($name, $echo = true) {
+		$keys = array_keys($this->pages);
 		for ( $i = count($keys) - 1; $i >= 0; $i-- ) {
 			$key = $keys[$i];
-			$page = self::$Pages[$key];
+			$page = $this->pages[$key];
 			if ( isset($page[$name]) ) {
-				$page[$name]->ShowMarkup = self::$ShowMarkup;
+				$page[$name]->ShowMarkup = $this->showMarkup;
 				return $page[$name];
 			}
 		}
 
 		// Make a blank wordlet
-		$wordlet = new WordletsObject(self::$CurrentPage, $name, null, null, self::$ShowMarkup);
+		$wordlet = new Wobject($this->currentPage, $name, null, null, $this->showMarkup);
 
-		if ( self::$ShowMarkup && !$wordlet->Configured && $echo ) echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
+		if ( $this->showMarkup && !$wordlet->Configured && $echo ) echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
 
 		$page[$name] = $wordlet;
 
@@ -32,7 +35,7 @@ class WordletsBase {
 	}
 }
 
-class WordletsObject implements Iterator, Countable {
+class Wobject implements \Iterator, \Countable {
 	public $Values = array();
 	public $Attrs = array();
 	public $Page;
@@ -116,7 +119,7 @@ class WordletsObject implements Iterator, Countable {
 
 		$value = $values[$name];
 
-		if ( $this->ShowMarkup && ($show_markup || $show_markup === null && $config['show_markup']) ) {
+		if ( $this->ShowMarkup && ($show_markup || $show_markup === null && @$config['show_markup']) ) {
 			return '<span ' . $this->HtmlAttrs() . '>'
 			. $this->Value($value, $config)
 			. '</span>';
@@ -164,10 +167,7 @@ class WordletsObject implements Iterator, Countable {
 
 		if ( $value === null ) return '';
 
-		switch ($config['html']) {
-			case 'none':
-				$value = strip_tags($value);
-				break;
+		switch (@$config['html']) {
 			case 'convert':
 				$value = htmlspecialchars($value);
 				break;
@@ -175,6 +175,10 @@ class WordletsObject implements Iterator, Countable {
 				$value = strip_tags($value, '<p><strong><b><i><em><div><span><br><br/><hr><hr/>');
 				break;
 			case 'all':
+				break;
+			case 'none':
+			default:
+				$value = strip_tags($value);
 				break;
 		}
 

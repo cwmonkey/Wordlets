@@ -1,17 +1,61 @@
 <?php
 
-include('../classes/Wordlets/Wordlets.class.php');
-include('../classes/Wordlets/WordletsMySql.class.php');
 include('config.local.php');
 
+// Static class for handling site functionality
 class Site {
-	public static $WordletClass = '\Wordlets\WordletsMySql';
 	public static $Wordlets;
+
+	public static function loadClass($name) {
+		if ( is_readable('../classes/' . $name . '.class.php') ) {
+			require_once('../classes/' . $name . '.class.php');
+		}
+	}
 }
 
-Site::$Wordlets = $wordlets = new \Wordlets\WordletsMySql('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass, 'wordlet_');
+spl_autoload_register('Site::loadClass');
 
-// Making shorthand functions for the template to use
+// A front end wrapper for pretty wordlet output
+class WordletWrapper {
+	public $wordlets;
+	public function __construct($wordlets) {
+		$this->wordlets = $wordlets;
+	}
+
+	public function __get($name) {
+		return $this->__call($name);
+	}
+
+	public function __call($name, $args = array()) {
+		array_unshift($args, $name);
+		return call_user_func_array(array($this->wordlets, 'getOne'), $args);
+	}
+}
+
+// Classes to enhance default functionality of Wordlets
+class WordletsMySite extends \Wordlets\WordletsMySql {
+	public function getWordlet($page, $name, $attrs = null, $values = null, $show_markup = false) {
+		return new WordletMySite($page, $name, $attrs, $values, $show_markup);
+	}
+}
+
+// Class to add a href to a form to edit wordlet
+class WordletMySite extends \Wordlets\Wordlet {
+	public function HtmlAttrs() {
+		if ( !$this->ShowMarkup ) return '';
+
+		$attrs = parent::HtmlAttrs();
+		$attrs .= ' data-wordlet-href="#"';
+		return $attrs;
+	}
+}
+
+Site::$Wordlets = $wordlets = new WordletsMySite('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass, 'wordlet_');
+
+// Making object for templates to use, more oo style
+$w = new WordletWrapper($wordlets);
+
+// Making shorthand functions for the template to use, Drupal style
 function w() {
 	$func_get_args = func_get_args();
 	try {
@@ -33,7 +77,7 @@ function wa($wordlet) {
 
 $page = @$_GET['page'];
 if ( $page == 'form' ) {
-	$image = new \Wordlets\Wobject(
+	$image = new \Wordlets\Wordlet(
 		'index',
 		'Image',
 		array(
@@ -59,7 +103,7 @@ if ( $page == 'form' ) {
 	);
 	$wordlets->saveObject($image);
 
-	$title = new \Wordlets\Wobject(
+	$title = new \Wordlets\Wordlet(
 		'index',
 		'Title',
 		array(
@@ -78,7 +122,7 @@ if ( $page == 'form' ) {
 	);
 	$wordlets->saveObject($title);
 
-	$subtitle = new \Wordlets\Wobject(
+	$subtitle = new \Wordlets\Wordlet(
 		'index',
 		'SubTitle',
 		array(
@@ -97,7 +141,7 @@ if ( $page == 'form' ) {
 	);
 	$wordlets->saveObject($subtitle);
 
-	$list = new \Wordlets\Wobject(
+	$list = new \Wordlets\Wordlet(
 		'index',
 		'List',
 		array(

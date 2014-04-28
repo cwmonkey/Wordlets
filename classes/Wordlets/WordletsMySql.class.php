@@ -62,7 +62,7 @@ class WordletsMySql extends WordletsBase {
 				}
 			}
 
-			$wordlet_object = new Wobject($page, $object_row->name, $attrs, $values, $this->showMarkup);
+			$wordlet_object = $this->getWordlet($page, $object_row->name, $attrs, $values, $this->showMarkup);
 
 			$this->setObject($wordlet_object);
 		}

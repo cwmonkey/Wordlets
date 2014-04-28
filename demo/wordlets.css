@@ -1,0 +1,41 @@
+[data-wordlet] {
+	outline: 4px dotted red !important;
+	outline-offset: -2px;
+}
+
+[data-wordlet-configured="true"] {
+	outline-color: blue !important;
+}
+
+[data-wordlet-configured="false"]:before {
+	content: "Add " attr(data-wordlet-name);
+}
+/*
+ * Hide only visually, but have it available for screenreaders: h5bp.com/v
+ */
+
+.wordlet_link {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/*
+ * Extends the .visuallyhidden class to allow the element to be focusable
+ * when navigated to via the keyboard: h5bp.com/p
+ */
+
+.wordlet_link:active,
+.wordlet_link:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}

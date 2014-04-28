@@ -2,43 +2,7 @@
 
 namespace Wordlets;
 
-class WordletsBase {
-	public $showMarkup = false;
-	public $currentPage;
-
-	public $pages = array();
-
-	public function setObject($object) {
-		if ( !isset($this->pages[$object->Page]) ) $this->pages[$object->Page] = array();
-		$this->pages[$object->Page][$object->Name] = $object;
-	}
-
-	public function getOne($name, $echo = true) {
-		$keys = array_keys($this->pages);
-		for ( $i = count($keys) - 1; $i >= 0; $i-- ) {
-			$key = $keys[$i];
-			$page = $this->pages[$key];
-			if ( isset($page[$name]) ) {
-				$page[$name]->ShowMarkup = $this->showMarkup;
-				return $page[$name];
-			}
-		}
-
-		// Make a blank wordlet
-		$wordlet = new Wobject($this->currentPage, $name, null, null, $this->showMarkup);
-
-		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
-			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
-			return null;
-		}
-
-		$page[$name] = $wordlet;
-
-		return $page[$name];
-	}
-}
-
-class Wobject implements \Iterator, \Countable {
+class Wordlet implements \Iterator, \Countable {
 	public $Values = array();
 	public $Attrs = array();
 	public $Page;
@@ -97,7 +61,7 @@ class Wobject implements \Iterator, \Countable {
 			$v = new WordletsValue($value, $config, $show_markup);
 			$this->Values[] = $v;
 		}*/
-		$this->Values = $values;
+		if ( is_array($values) ) $this->Values = $values;
 		$this->length = count($values);
 		if ( $attrs ) $this->Configured = true;
 	}
@@ -106,7 +70,8 @@ class Wobject implements \Iterator, \Countable {
 		return $this->__call($name);
 	}
 
-	public function __call($name, $show_markup = null) {
+	public function __call($name, $args = null) {
+		$show_markup = @$args[0];
 		$values = $this->GetCurrent();
 
 		if ( !isset($values[$name]) ) {
@@ -122,7 +87,7 @@ class Wobject implements \Iterator, \Countable {
 
 		$value = $values[$name];
 
-		if ( $this->ShowMarkup && ($show_markup || $show_markup === null && @$config['show_markup']) ) {
+		if ( $this->ShowMarkup && ($show_markup || ($show_markup === null && @$config['show_markup'])) ) {
 			return '<span ' . $this->HtmlAttrs() . '>'
 			. $this->Value($value, $config)
 			. '</span>';
@@ -141,11 +106,6 @@ class Wobject implements \Iterator, \Countable {
 		}
 
 		return '';
-		/*if ( $this->ShowMarkup ) {
-			return '<span ' . $this->Attrs() . '></span>';
-		} else {
-			return '';
-		}*/
 	}
 
 	public function GetCurrent() {
@@ -188,44 +148,10 @@ class Wobject implements \Iterator, \Countable {
 		return $value;
 	}
 
-	public function HtmlAttrs($show_class = true) {
+	public function HtmlAttrs() {
 		if ( !$this->ShowMarkup ) return '';
 
-		$attrs = 'data-wordlet-configured="' . ($this->Configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
-		if ( $show_class ) $attrs = ' class="wordlet wordlet_' . ($this->Configured?'':'un') . 'configured" ' . $attrs;
+		$attrs = 'data-wordlet="wordlet" data-wordlet-configured="' . ($this->Configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
 		return $attrs;
-	}
-}
-
-class WordletsValue {
-	public $ShowMarkup = true;
-	public $value = '';
-	public $Config;
-
-	public function __construct($value, $config, $show_markup = true) {
-		$this->ShowMarkup = $show_markup;
-		$this->value = $value;
-		$this->Config = $config;
-	}
-
-	public function Value() {
-		if ( $this->value === null ) return '';
-		$value = $this->value;
-
-		switch ($this->Config['html']) {
-			case 'none':
-				$value = strip_tags($value);
-				break;
-			case 'convert':
-				$value = htmlspecialchars($value);
-				break;
-			case 'safe':
-				$value = strip_tags($value, '<p><strong><b><i><em><div><span><br><br/><hr><hr/>');
-				break;
-			case 'all':
-				break;
-		}
-
-		return $value;
 	}
 }

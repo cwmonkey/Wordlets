@@ -25,7 +25,7 @@ class WordletsBase {
 		}
 
 		// Make a blank wordlet
-		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, $this->showMarkup);
+		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $this->showMarkup, 1);
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
@@ -37,7 +37,7 @@ class WordletsBase {
 		return $page[$name];
 	}
 
-	public function getWordlet($page, $name, $attrs = null, $values = null, $show_markup = false) {
-		return new Wordlet($page, $name, $attrs, $values, $show_markup);
+	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false) {
+		return new Wordlet($page, $name, $id, $attrs, $values, $show_markup);
 	}
 }

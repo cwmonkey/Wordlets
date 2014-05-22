@@ -2,6 +2,8 @@
 
 include('config.local.php');
 
+$app = __DIR__;
+
 // Static class for handling site functionality
 class Site {
 	public static $Wordlets;
@@ -34,18 +36,33 @@ class WordletWrapper {
 
 // Classes to enhance default functionality of Wordlets
 class WordletsMySite extends \Wordlets\WordletsMySql {
-	public function getWordlet($page, $name, $attrs = null, $values = null, $show_markup = false) {
-		return new WordletMySite($page, $name, $attrs, $values, $show_markup);
+	public $ShowEdit = false;
+	public $ShowConfigure = false;
+
+	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1) {
+		$wordlet = new WordletMySite($page, $name, $id, $attrs, $values, $show_markup, $cardinality);
+		$wordlet->ShowEdit = $this->ShowEdit;
+		$wordlet->ShowConfigure = $this->ShowConfigure;
+		return $wordlet;
 	}
 }
 
 // Class to add a href to a form to edit wordlet
 class WordletMySite extends \Wordlets\Wordlet {
+	public $ShowEdit = false;
+	public $ShowConfigure = false;
+
 	public function HtmlAttrs() {
 		if ( !$this->ShowMarkup ) return '';
 
 		$attrs = parent::HtmlAttrs();
-		$attrs .= ' data-wordlet-href="#"';
+		if ( $this->Configured ) {
+			if ( $this->ShowEdit ) $attrs .= ' data-wordlet-edit="?do=form&action=edit&id=' . $this->Id . '"';
+			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&id=' . $this->Id . '"';
+		} else {
+			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&page=' . $this->Page . '&name=' . $this->Name . '"';
+		}
+
 		return $attrs;
 	}
 }
@@ -75,107 +92,17 @@ function wa($wordlet) {
 	}
 }
 
-$page = @$_GET['page'];
-if ( $page == 'form' ) {
-	$image = new \Wordlets\Wordlet(
-		'index',
-		'Image',
-		array(
-			'src' => array(
-				'type' => 'single',
-				'html' => 'none',
-				'order' => 0,
-				'show_markup' => 0,
-			),
-			'alt' => array(
-				'type' => 'single',
-				'html' => 'none',
-				'order' => 1,
-				'show_markup' => 0,
-			),
-		),
-		$values = array(
-			array(
-				'src' => 'http://i.imgur.com/9fOG9nlb.jpg',
-				'alt' => 'This is some Alt'
-			),
-		)
-	);
-	$wordlets->saveObject($image);
+$tablePrepend = 'wordlet_';
+$pdo = new \PDO('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass);
 
-	$title = new \Wordlets\Wordlet(
-		'index',
-		'Title',
-		array(
-			'single' => array(
-				'type' => 'single',
-				'html' => 'none',
-				'order' => 0,
-				'show_markup' => 1,
-			),
-		),
-		$values = array(
-			array(
-				'single' => 'This is a Title'
-			),
-		)
-	);
-	$wordlets->saveObject($title);
-
-	$subtitle = new \Wordlets\Wordlet(
-		'index',
-		'SubTitle',
-		array(
-			'single' => array(
-				'type' => 'single',
-				'html' => 'none',
-				'order' => 0,
-				'show_markup' => 1,
-			),
-		),
-		$values = array(
-			array(
-				'single' => 'This is a Sub Title'
-			),
-		)
-	);
-	$wordlets->saveObject($subtitle);
-
-	$list = new \Wordlets\Wordlet(
-		'index',
-		'List',
-		array(
-			'single' => array(
-				'type' => 'single',
-				'html' => 'none',
-				'order' => 0,
-				'show_markup' => 1,
-			),
-		),
-		$values = array(
-			array(
-				'single' => 'This is the first list item'
-			),
-			array(
-				'single' => 'This is the second list item'
-			),
-			array(
-				'single' => 'This is the third list item'
-			),
-			array(
-				'single' => 'This is the fourth list item'
-			),
-		)
-	);
-	$wordlets->saveObject($list);
-
-	//include('form.php');
-	//header('Location: .');
+$page = @$_GET['do'];
+if ( $page == 'delete' ) {
+	include('controllers/delete.controller.php');
+} elseif ( $page == 'reset' ) {
+	include('controllers/reset.controller.php');
+} elseif ( $page == 'form' ) {
+	include('controllers/form.controller.php');
 } else {
-	$admin = @$_GET['admin'];
-	if ( $admin ) $wordlets->showMarkup = true;
-	$wordlets->loadObjects('_site', 'index');
-
-	include('index.tpl.php');
+	include('controllers/page.controller.php');
 }
 

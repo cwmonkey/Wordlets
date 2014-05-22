@@ -25,6 +25,15 @@
 	</div>
 <? endif ?>
 
+<p>List with multiple attributes.</p>
+<? if ( $images = w('Images') ): ?>
+	<ul <?=wa($images) ?>>
+		<? foreach ( $images as $key => $image ): ?>
+			<li><img src="<?=$image->src ?>" alt="<?=$image->alt ?>"></li>
+		<? endforeach ?>
+	</ul>
+<? endif ?>
+
 <p>Showing the same wordlet markup around individual items in list</p>
 <? if ( $list = w('List') ): ?>
 	<ul>
@@ -62,10 +71,13 @@
 <nav>
 	<ul>
 		<li><a href="?admin=1">admin view</a></li>
+		<li><a href="?editor=1">editor view</a></li>
 		<li><a href="?">regular view</a></li>
-		<li><a href="?page=form">add wordlets</a></li>
+		<li><a href="?do=delete">delete all</a></li>
+		<li><a href="?do=reset">reset</a></li>
 	</ul>
 </nav>
 
 <script type="text/javascript" defer src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script defer>window.jQuery || document.write('<script defer src="jquery-1.7.2.min.js"><\/script>')</script>
 <script type="text/javascript" defer src="wordlets.jquery.js"></script>

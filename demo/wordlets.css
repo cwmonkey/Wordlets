@@ -1,6 +1,28 @@
 [data-wordlet] {
-	outline: 4px dotted red !important;
-	outline-offset: -2px;
+    outline: 4px dotted red !important;
+    outline-offset: -2px;
+}
+
+[data-wordlet]:hover {
+    position: relative;
+}
+
+[data-wordlet] .wordlet_links:focus,
+[data-wordlet] .wordlet_links:active,
+[data-wordlet]:hover .wordlet_links {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    width: auto;
+    background: #fff;
+    font-size: 16px;
+    font-weight: normal;
+    left: 0;
+    top: 0;
+
+    outline: 4px dotted yellow !important;
+    outline-offset: -2px;
 }
 
 [data-wordlet-configured="true"] {
@@ -10,11 +32,31 @@
 [data-wordlet-configured="false"]:before {
 	content: "Add " attr(data-wordlet-name);
 }
+
+[data-wordlet] .wordlet_links a {
+    text-decoration: underline !important;
+    display: block !important;
+    white-space: nowrap;
+}
+
+[data-wordlet] .wordlet_links a:hover,
+[data-wordlet] .wordlet_links a:focus {
+    background: yellow !important;
+}
+
+.wordlet-edit {
+    color: blue !important;
+}
+
+.wordlet-configure {
+    color: red !important;
+}
+
 /*
  * Hide only visually, but have it available for screenreaders: h5bp.com/v
  */
 
-.wordlet_link {
+.wordlet_links {
     border: 0;
     clip: rect(0 0 0 0);
     height: 1px;
@@ -23,19 +65,4 @@
     padding: 0;
     position: absolute;
     width: 1px;
-}
-
-/*
- * Extends the .visuallyhidden class to allow the element to be focusable
- * when navigated to via the keyboard: h5bp.com/p
- */
-
-.wordlet_link:active,
-.wordlet_link:focus {
-    clip: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    position: static;
-    width: auto;
 }

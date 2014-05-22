@@ -7,7 +7,9 @@ class Wordlet implements \Iterator, \Countable {
 	public $Attrs = array();
 	public $Page;
 	public $Name;
+	public $Id;
 	public $ShowMarkup;
+	public $Cardinality;
 	public $Configured = false;
 
 	public $DefaultConfig = array(
@@ -51,11 +53,13 @@ class Wordlet implements \Iterator, \Countable {
 	}
 
 	// The rest
-	public function __construct($page, $name, $attrs = null, $values = null, $show_markup = false) {
+	public function __construct($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1) {
 		$this->Page = $page;
 		$this->Name = $name;
+		$this->Id = $id;
 		$this->Attrs = $attrs;
 		$this->ShowMarkup = $show_markup;
+		$this->Cardinality = $cardinality;
 
 		/*foreach ( $values as $value ) {
 			$v = new WordletsValue($value, $config, $show_markup);

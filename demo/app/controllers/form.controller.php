@@ -209,7 +209,7 @@ if ( $action == 'configure' ) {
 	foreach ( $wordlet->Attrs as $attr ) {
 		$a = new stdClass();
 		foreach ( $attr as $key => $value ) {
-			$a->{$key} = $value;
+			$a->{$key} = htmlspecialchars($value);
 		}
 
 		$form->attrs[] = $a;

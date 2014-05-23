@@ -17,7 +17,7 @@ foreach ( $routes as $name => $route ) {
 }
 
 if ( !$page ) {
-	foreach ( $routes as $page ) { break; }
+	$page = $routes['index'];
 }
 
 $styles = array('css/reset.css', 'css/cms-normalize.css', 'css/site.css');

@@ -1,0 +1,39 @@
+#mysite_wrapper {
+	padding: 1px 0;
+	background: pink;
+}
+
+#mysite_header,
+#mysite_footer,
+#mysite_content {
+	border-radius: .5em;
+	border: 1px solid #000;
+	padding: .5em;
+	margin: 1em;
+}
+
+#mysite_nav {
+	border: 1px solid #000;
+	border-right: none;
+	display: flex;
+}
+
+#mysite_nav a {
+	flex-grow: 1;
+	border-right: 1px solid #000;
+	text-align: center;
+	display: inline-block;
+	padding: .5em;
+}
+
+#mysite_title {
+	font-size: 1.5em;
+	margin-bottom: .5em;
+	text-align: center;
+}
+
+.page_title {
+	font-size: 1.5em;
+	text-align: center;
+	margin-bottom: .5em;
+}

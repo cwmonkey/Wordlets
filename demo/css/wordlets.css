@@ -36,7 +36,8 @@
 [data-wordlet] .wordlet_links a {
     text-decoration: underline !important;
     display: block !important;
-    white-space: nowrap;
+    text-align: left !important;
+    white-space: nowrap !important;
 }
 
 [data-wordlet] .wordlet_links a:hover,

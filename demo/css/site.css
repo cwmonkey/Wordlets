@@ -1,0 +1,56 @@
+*,
+*:before,
+*:after {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+body {
+	font-size: 16px;
+	background: #aaa;
+}
+
+a:focus,
+a:hover {
+	color: red;
+}
+
+#site_wrapper {
+	width: 60em;
+	margin: auto;
+	position: relative;
+	background: #fff;
+}
+
+#site_footer,
+#site_header {
+	background: lightblue;
+	padding: .5em;
+	display: inline-block;
+	width: 100%;
+	vertical-align: top;
+}
+
+#site_title {
+	font-size: 1.1em;
+	float: left;
+}
+
+#menu {
+	float: right;
+}
+
+#menu a {
+	padding-right: .25em;
+	border-right: 1px solid black;
+}
+
+#menu a:last-child {
+	padding-right: 0;
+	border-right: none;
+}
+
+#wordlet_page_config {
+	background: yellow;
+}

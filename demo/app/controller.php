@@ -1,5 +1,8 @@
 <?php
 
+session_start();
+
+include('config.php');
 include('config.local.php');
 
 $app = __DIR__;
@@ -7,6 +10,7 @@ $app = __DIR__;
 // Static class for handling site functionality
 class Site {
 	public static $Wordlets;
+	public static $routes = array();
 
 	public static function loadClass($name) {
 		if ( is_readable('../classes/' . $name . '.class.php') ) {
@@ -16,6 +20,9 @@ class Site {
 }
 
 spl_autoload_register('Site::loadClass');
+
+// Cheese a global variable for wordlet value replacements
+Site::$routes = $routes;
 
 // A front end wrapper for pretty wordlet output
 class WordletWrapper {
@@ -65,6 +72,17 @@ class WordletMySite extends \Wordlets\Wordlet {
 
 		return $attrs;
 	}
+
+
+	public function Value($value, $config) {
+		$value = parent::Value($value, $config);
+		foreach ( Site::$routes as $name => $route ) {
+			if ( isset($route['url']) ) {
+				$value = str_replace('{' . $name . '_url}', $route['url'], $value);
+			}
+		}
+		return $value;
+	}
 }
 
 Site::$Wordlets = $wordlets = new WordletsMySite('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass, 'wordlet_');
@@ -82,9 +100,17 @@ function w() {
 	}
 }
 
+function wn($name) {
+	try {
+		return Site::$Wordlets->getOne($name, false);
+	} catch (Exception $e) {
+		return '';
+	}
+}
+
 function wa($wordlet) {
 	try {
-		$obj = ( is_object($wordlet) ) ? $wordlet : w($wordlet, false);
+		$obj = ( is_object($wordlet) ) ? $wordlet : w($wordlet);
 		if ( Site::$Wordlets->showMarkup ) return $obj->HtmlAttrs();
 		return '';
 	} catch (Exception $e) {
@@ -94,6 +120,19 @@ function wa($wordlet) {
 
 $tablePrepend = 'wordlet_';
 $pdo = new \PDO('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass);
+
+$user = '';
+if ( isset($_GET['user']) && ($user = $_GET['user']) ) {
+	if ( $user == 'admin' ) {
+		$_SESSION['user'] = 'admin';
+	} elseif ( $user == 'editor' ) {
+		$_SESSION['user'] = 'editor';
+	} else {
+		$_SESSION['user'] = '';
+	}
+} elseif ( isset($_SESSION['user']) && ($user = $_SESSION['user']) ) {
+
+}
 
 $page = @$_GET['do'];
 if ( $page == 'delete' ) {

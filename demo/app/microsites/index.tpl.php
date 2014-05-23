@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="wordlets.css"/>
-
 <p>Directly printing a wordlet:</p>
 <h1><?=w('Title') ?></h1>
 
@@ -77,7 +75,3 @@
 		<li><a href="?do=reset">reset</a></li>
 	</ul>
 </nav>
-
-<script type="text/javascript" defer src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script defer>window.jQuery || document.write('<script defer src="jquery-1.7.2.min.js"><\/script>')</script>
-<script type="text/javascript" defer src="wordlets.jquery.js"></script>

@@ -8,11 +8,10 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	// Update wordlet
 	if ( isset($_POST['id']) ) {
 		$id = $_POST['id'];
+		$wordlet = $wordlets->getObjectsById($id);
 
 		// Update wordlet configuration
 		if ( $action == 'configure' ) {
-			$wordlet = $wordlets->getObjectsById($id);
-
 			// Object
 			$wordlet->Page = $_POST['page_id'];
 			$wordlet->Name = $_POST['name'];
@@ -21,7 +20,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			$attrs = array();
 
 			foreach ( $_POST['attr'] as $key => $attr ) {
-				if ( isset($attr['name']) ) {
+				if ( isset($attr['name']) && $attr['name'] ) {
 					$attr['show_markup'] = ( @$attr['show_markup'] ) ? 1 : 0;
 					$attrs[$attr['name']] = $attr;
 				}
@@ -31,8 +30,6 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			$wordlets->saveObject($wordlet, $_POST['cardinality']);
 		// Update wordlet values
 		} elseif ( $action == 'edit' ) {
-			$wordlet = $wordlets->getObjectsById($id);
-
 			$values = array();
 
 			foreach ( $_POST['value'] as $value ) {
@@ -51,14 +48,12 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		}
 	// Add a new wordlet
 	} elseif ( $action == 'configure' ) {
-		$query = $pdo->prepare("SELECT * FROM {$tablePrepend}page WHERE id = :id");
-		$result = $query->execute(array('id' => $_POST['page_id']));
-		$page = $query->fetchObject();
+		$page_name = $_POST['page_id'];
 
 		$attrs = array();
 		$values = array(array());
 		foreach ( $_POST['attr'] as $key => $attr ) {
-			if ( isset($attr['name']) ) {
+			if ( isset($attr['name']) && $attr['name'] ) {
 				$attr['show_markup'] = ( @$attr['show_markup'] ) ? 1 : 0;
 				$attrs[$attr['name']] = $attr;
 				$values[0][$attr['name']] = $attr['value'];
@@ -66,7 +61,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		}
 
 		$wordlet = new \Wordlets\Wordlet(
-			$page->name,
+			$page_name,
 			$_POST['name'],
 			null,
 			$attrs,
@@ -84,7 +79,11 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 $form = new stdClass();
 $form->action = '?' . $_SERVER['QUERY_STRING'];
 
-$types = array('single', 'multi', 'number');
+$attrattrs = array(
+	'type' => array('single', 'multi', 'number'),
+	'html' => array('convert', 'safe', 'all', 'none'),
+	'format' => array('none', 'simple'),
+);
 
 if ( $id ) {
 	$wordlet = $wordlets->getObjectsById($id);
@@ -98,6 +97,7 @@ if ( $id ) {
 				'name' => 'single',
 				'type' => 'single',
 				'html' => 'none',
+				'format' => 'none',
 				'info' => '',
 				'order' => 0,
 				'show_markup' => 1,
@@ -142,24 +142,20 @@ if ( $action == 'configure' ) {
 	}
 
 	// Pages dropdown
-	$query = $pdo->prepare("SELECT * FROM {$tablePrepend}page");
-	$result = $query->execute();
-	$rows = $query->fetchAll(\PDO::FETCH_OBJ);
 	$form->pages = array();
 
-	foreach ( $rows as $row ) {
+	foreach ( $routes as $name => $route ) {
 		$obj = new stdClass();
-		//$obj->value = $row->id;
-		$obj->value = $row->name;
-		$obj->text = $row->name;
-		$obj->selected = ( $wordlet->Page == $row->name );
+		$obj->value = $name;
+		$obj->text = ( isset($route['title']) ) ? $route['title'] : $name;
+		$obj->selected = ( $wordlet->Page == $name );
 		$form->pages[] = $obj;
 	}
 
 	// Attrs
 
 	// Make a blank attr for new attrs
-	$battr = array('name' => '', 'show_markup' => false, 'type' => 'single', 'info' => '');
+	$battr = array('name' => '', 'show_markup' => false, 'type' => 'single', 'html' => 'none', 'format' => 'none', 'info' => '');
 
 	// If this is a new wordlet, add a value field
 	if ( !$id ) $battr['value'] = '';
@@ -174,14 +170,18 @@ if ( $action == 'configure' ) {
 		foreach ( $attr as $key => $value ) {
 			$a->{$key} = $value;
 		}
-		$a->types = array();
-		foreach ( $types as $type ) {
-			$t = new stdClass();
-			$t->value = $type;
-			$t->text = $type;
-			$t->selected = ( $type == $attr['type'] );
-			$a->types[] = $t;
+
+		foreach ( $attrattrs as $akey => $attrattr) {
+			$a->{$akey . 's'} = array();
+			foreach ( $attrattr as $type ) {
+				$t = new stdClass();
+				$t->value = $type;
+				$t->text = $type;
+				$t->selected = ( $type == $attr[$akey] );
+				$a->{$akey . 's'}[] = $t;
+			}
 		}
+
 		$form->attrs[] = $a;
 	}
 

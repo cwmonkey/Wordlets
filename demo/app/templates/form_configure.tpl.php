@@ -57,11 +57,29 @@ form {
 					Show Wordlet Markup
 				</label>
 				<label for="attr_<?=$i ?>_type">
-					Type:
+					Input Type:
 					<select id="attr_<?=$i ?>_type" name="attr[<?=$i ?>][type]">
 						<option>Select Type</option>
 						<? foreach ( $attr->types as $type ): ?>
 							<option value="<?=$type->value ?>" <?=($type->selected)?'selected':''?>><?=$type->text ?></option>
+						<? endforeach ?>
+					</select>
+				</label>
+				<label for="attr_<?=$i ?>_html">
+					HTML Conversion:
+					<select id="attr_<?=$i ?>_html" name="attr[<?=$i ?>][html]">
+						<option>Select HTML Conversion</option>
+						<? foreach ( $attr->htmls as $html ): ?>
+							<option value="<?=$html->value ?>" <?=($html->selected)?'selected':''?>><?=$html->text ?></option>
+						<? endforeach ?>
+					</select>
+				</label>
+				<label for="attr_<?=$i ?>_format">
+					Format:
+					<select id="attr_<?=$i ?>_format" name="attr[<?=$i ?>][format]">
+						<option>Select Format</option>
+						<? foreach ( $attr->formats as $format ): ?>
+							<option value="<?=$format->value ?>" <?=($format->selected)?'selected':''?>><?=$format->text ?></option>
 						<? endforeach ?>
 					</select>
 				</label>

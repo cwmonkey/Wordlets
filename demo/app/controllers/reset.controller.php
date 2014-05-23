@@ -14,12 +14,13 @@ $result = $query->execute();
 
 $site_title = new \Wordlets\Wordlet(
 	'_site',
-	'Title',
+	'Site Title',
 	null,
 	array(
 		'single' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 1,
 		),
@@ -42,6 +43,7 @@ $title = new \Wordlets\Wordlet(
 		'single' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 1,
 		),
@@ -56,6 +58,95 @@ $title = new \Wordlets\Wordlet(
 );
 $wordlets->saveObject($title, 1);
 
+$title = new \Wordlets\Wordlet(
+	'mysite',
+	'MySite Title',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'This is the MySite Title'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($title, 1);
+
+$title = new \Wordlets\Wordlet(
+	'mysite-index',
+	'MySite Index Title',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'This is the MySite Index Page Title'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($title, 1);
+
+$navs = new \Wordlets\Wordlet(
+	'mysite',
+	'navs',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+		'href' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 1,
+			'show_markup' => 0,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'Home',
+			'href' => '{mysite-index_url}'
+		),
+		array(
+			'single' => 'Page 1',
+			'href' => '{mysite-page1_url}'
+		),
+		array(
+			'single' => 'Page 2',
+			'href' => '{mysite-page2_url}'
+		),
+		array(
+			'single' => 'Page 3',
+			'href' => '{mysite-page3_url}'
+		),
+	),
+	false,
+	0
+);
+$wordlets->saveObject($navs, 0);
+
 $image = new \Wordlets\Wordlet(
 	'index',
 	'Image',
@@ -64,12 +155,14 @@ $image = new \Wordlets\Wordlet(
 		'src' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 0,
 		),
 		'alt' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 1,
 			'show_markup' => 0,
 		),
@@ -93,12 +186,14 @@ $images = new \Wordlets\Wordlet(
 		'src' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 0,
 		),
 		'alt' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 1,
 			'show_markup' => 0,
 		),
@@ -134,6 +229,7 @@ $subtitle = new \Wordlets\Wordlet(
 		'single' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 1,
 		),
@@ -156,6 +252,7 @@ $list = new \Wordlets\Wordlet(
 		'single' => array(
 			'type' => 'single',
 			'html' => 'none',
+			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 1,
 		),

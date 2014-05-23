@@ -134,7 +134,15 @@ class Wordlet implements \Iterator, \Countable {
 
 		if ( $value === null ) return '';
 
-		switch (@$config['html']) {
+		$value = $this->ValueHtml($value, @$config['html']);
+
+		$value = $this->ValueFormat($value, @$config['html']);
+
+		return $value;
+	}
+
+	public function ValueHtml($value, $config) {
+		switch ($config) {
 			case 'convert':
 				$value = htmlspecialchars($value);
 				break;
@@ -149,7 +157,11 @@ class Wordlet implements \Iterator, \Countable {
 				break;
 		}
 
-		switch (@$config['format']) {
+		return $value;
+	}
+
+	public function ValueFormat($value, $config) {
+		switch ($config) {
 			case 'simple':
 				$value = preg_replace("/[\r]+/", '', $value);
 				$value = '<p>' . preg_replace("/[\n]{2,}/", '</p><p>', $value) . '</p>';

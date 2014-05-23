@@ -1,5 +1,5 @@
 [data-wordlet] {
-    outline: 4px dotted red !important;
+    outline: 4px dotted rgba(255, 0, 0, .5) !important;
     outline-offset: -2px;
 }
 
@@ -21,12 +21,12 @@
     left: 0;
     top: 0;
 
-    outline: 4px dotted yellow !important;
+    outline: 4px dotted rgba(255, 255, 0, .5) !important;
     outline-offset: -2px;
 }
 
 [data-wordlet-configured="true"] {
-	outline-color: blue !important;
+	outline-color: rgba(0, 0, 255, .5) !important;
 }
 
 [data-wordlet-configured="false"]:before {

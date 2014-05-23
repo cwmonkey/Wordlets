@@ -20,12 +20,15 @@ class WordletsBase {
 			$page = $this->pages[$key];
 			if ( isset($page[$name]) ) {
 				$page[$name]->ShowMarkup = $this->showMarkup;
+				if ( !$echo ) $page[$name]->ShowMarkup = false;
 				return $page[$name];
 			}
 		}
 
 		// Make a blank wordlet
-		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $this->showMarkup, 1);
+		$show_markup = $this->showMarkup;
+		if ( !$echo ) $show_markup = false;
+		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $show_markup, 1);
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';

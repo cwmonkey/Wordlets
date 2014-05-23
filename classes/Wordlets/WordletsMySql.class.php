@@ -151,7 +151,7 @@ class WordletsMySql extends WordletsBase {
 				$attr_row = $attr_rows[0];
 
 				$attr_update_query = $this->pdo->prepare("UPDATE {$this->tablePrepend}attr
-					SET type=:type, name=:name, info=:info, show_markup=:show_markup
+					SET type=:type, html=:html, format=:format, name=:name, info=:info, show_markup=:show_markup
 					WHERE id=:id");
 
 				$attr['info'] = '';
@@ -159,6 +159,8 @@ class WordletsMySql extends WordletsBase {
 				$attr_update_result = $attr_update_query->execute(array(
 					':id' => $attr_row->id,
 					':type' => $attr['type'],
+					':html' => $attr['html'],
+					':format' => $attr['format'],
 					':name' => $name,
 					':info' => $attr['info'],
 					':show_markup' => $attr['show_markup'],
@@ -169,14 +171,16 @@ class WordletsMySql extends WordletsBase {
 			// Make new Attr
 			} else {
 				$attr_insert_query = $this->pdo->prepare("INSERT INTO {$this->tablePrepend}attr
-					(object_id, type, name, info, show_markup)
-					VALUES(:object_id, :type, :name, :info, :show_markup)");
+					(object_id, type, html, format, name, info, show_markup)
+					VALUES(:object_id, :type, :html, :format, :name, :info, :show_markup)");
 
 				$attr['info'] = '';
 
 				$attr_insert_result = $attr_insert_query->execute(array(
 					':object_id' => $object_id,
 					':type' => $attr['type'],
+					':html' => $attr['html'],
+					':format' => $attr['format'],
 					':name' => $name,
 					':info' => $attr['info'],
 					':show_markup' => $attr['show_markup'],

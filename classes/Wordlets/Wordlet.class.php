@@ -149,6 +149,17 @@ class Wordlet implements \Iterator, \Countable {
 				break;
 		}
 
+		switch (@$config['format']) {
+			case 'simple':
+				$value = preg_replace("/[\r]+/", '', $value);
+				$value = '<p>' . preg_replace("/[\n]{2,}/", '</p><p>', $value) . '</p>';
+				$value = preg_replace("/[\n]/", '<br>', $value);
+				break;
+			case 'none':
+			default:
+				break;
+		}
+
 		return $value;
 	}
 

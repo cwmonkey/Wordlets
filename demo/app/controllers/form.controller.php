@@ -77,7 +77,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 }
 
 $form = new stdClass();
-$form->action = '?' . $_SERVER['QUERY_STRING'];
+$form->action = '/demo/?' . $_SERVER['QUERY_STRING'];
 
 $attrattrs = array(
 	'type' => array('single', 'multi', 'number'),

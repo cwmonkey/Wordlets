@@ -1,0 +1,82 @@
+@keyframes fadeIn {
+    from {  }
+      to {  }
+}
+@-webkit-keyframes fadeIn {
+    from {  }
+      to {  }
+}
+@-moz-keyframes fadeIn {
+    from {  }
+      to {  }
+}
+@-ms-keyframes fadeIn {
+    from {  }
+      to {  }
+}
+@-o-keyframes fadeIn {
+    from {  }
+      to {  }
+}
+
+
+@keyframes fadeOut {
+    from { clip: auto; }
+      to { clip: auto; }
+}
+@-webkit-keyframes fadeOut {
+    from { clip: auto; }
+      to { clip: auto; }
+}
+@-moz-keyframes fadeOut {
+    from { clip: auto; }
+      to { clip: auto; }
+}
+@-ms-keyframes fadeOut {
+    from { clip: auto; }
+      to { clip: auto; }
+}
+@-o-keyframes fadeOut {
+    from { clip: auto; }
+      to { clip: auto; }
+}
+
+
+.cwmModal-overlay {
+	background: #000;
+	opacity: .5;
+	transition: opacity .2s linear;
+
+	-webkit-animation: fadeOut .2s ease-in-out;
+	-moz-animation: fadeOut .2s ease-in-out;
+	-o-animation: fadeOut .2s ease-in-out;
+	-ms-animation: fadeOut .2s ease-in-out;
+	animation: fadeOut .2s ease-in-out;
+
+	display: block !important;
+	clip: rect(0,0,0,0);
+}
+
+.cwmModal-overlay.cwmModal-show {
+	-webkit-animation: fadeIn .2s ease-in-out;
+	-moz-animation: fadeIn .2s ease-in-out;
+	-o-animation: fadeIn .2s ease-in-out;
+	-ms-animation: fadeIn .2s ease-in-out;
+	animation: fadeIn .2s ease-in-out;
+
+	display: block !important;
+	clip: auto;
+}
+
+.cwmModal-loading,
+.cwmModal-content {
+	padding: 1em;
+	border-radius: .5em;
+	background: #fff;
+	transition: opacity .1s linear;
+}
+
+.cwmModal-loading:after {
+	display: block;
+	content: "Loading...";
+}

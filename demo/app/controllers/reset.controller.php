@@ -137,7 +137,7 @@ $footer = new \Wordlets\Wordlet(
 	array(
 		'single' => array(
 			'type' => 'single',
-			'html' => 'none',
+			'html' => 'safe',
 			'format' => 'none',
 			'order' => 0,
 			'show_markup' => 1,
@@ -145,7 +145,7 @@ $footer = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'Site Footer'
+			'single' => '<a href="https://github.com/cwmonkey/Wordlets">Source on GIT</a>'
 		),
 	),
 	false,

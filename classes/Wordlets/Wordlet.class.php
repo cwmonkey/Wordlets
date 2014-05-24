@@ -147,7 +147,7 @@ class Wordlet implements \Iterator, \Countable {
 				$value = htmlspecialchars($value);
 				break;
 			case 'safe':
-				$value = strip_tags($value, '<p><strong><b><i><em><div><span><br><br/><hr><hr/>');
+				$value = strip_tags($value, '<a><p><strong><b><i><em><div><span><br><br/><hr><hr/>');
 				break;
 			case 'all':
 				break;

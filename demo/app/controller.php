@@ -94,7 +94,8 @@ $w = new WordletWrapper($wordlets);
 function w() {
 	$func_get_args = func_get_args();
 	try {
-		return call_user_func_array(array(Site::$Wordlets, 'getOne'), $func_get_args);
+		$obj = call_user_func_array(array(Site::$Wordlets, 'getOne'), $func_get_args);
+		return $obj;
 	} catch (Exception $e) {
 		return '';
 	}
@@ -111,6 +112,7 @@ function wn($name) {
 function wa($wordlet) {
 	try {
 		$obj = ( is_object($wordlet) ) ? $wordlet : w($wordlet);
+		if ( !$obj ) return '';
 		if ( Site::$Wordlets->showMarkup ) return $obj->HtmlAttrs();
 		return '';
 	} catch (Exception $e) {

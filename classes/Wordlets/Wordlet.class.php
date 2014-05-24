@@ -109,7 +109,7 @@ class Wordlet implements \Iterator, \Countable {
 			}
 		}
 
-		return '';
+		return $this->__get(null) . '';
 	}
 
 	public function GetCurrent() {
@@ -136,7 +136,7 @@ class Wordlet implements \Iterator, \Countable {
 
 		$value = $this->ValueHtml($value, @$config['html']);
 
-		$value = $this->ValueFormat($value, @$config['html']);
+		$value = $this->ValueFormat($value, @$config['format']);
 
 		return $value;
 	}

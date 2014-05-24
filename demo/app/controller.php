@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 include('config.php');
 include('config.local.php');
 
@@ -13,6 +11,7 @@ class Site {
 	public static $routes = array();
 
 	public static function loadClass($name) {
+		$name = str_replace('\\', '/', $name);
 		if ( is_readable('../classes/' . $name . '.class.php') ) {
 			require_once('../classes/' . $name . '.class.php');
 		}
@@ -124,15 +123,16 @@ $tablePrepend = 'wordlet_';
 $pdo = new \PDO('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass);
 
 $user = '';
+
 if ( isset($_GET['user']) && ($user = $_GET['user']) ) {
 	if ( $user == 'admin' ) {
-		$_SESSION['user'] = 'admin';
+		setcookie('user', 'admin');
 	} elseif ( $user == 'editor' ) {
-		$_SESSION['user'] = 'editor';
+		setcookie('user', 'editor');
 	} else {
-		$_SESSION['user'] = '';
+		setcookie('user', '');
 	}
-} elseif ( isset($_SESSION['user']) && ($user = $_SESSION['user']) ) {
+} elseif ( isset($_COOKIE['user']) && ($user = $_COOKIE['user']) ) {
 
 }
 

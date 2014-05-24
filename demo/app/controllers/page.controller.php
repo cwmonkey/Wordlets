@@ -20,8 +20,8 @@ if ( !$page ) {
 	$page = $routes['index'];
 }
 
-$styles = array('css/reset.css', 'css/cms-normalize.css', 'css/site.css', 'vendor/jqModal/jqModal.css', 'vendor/cwmModal/cwmModal.css');
-$scripts = array('vendor/jquery.load.js', 'vendor/cwmModal/cwmModal.jquery.js', 'vendor/jqModal/jqDnR.js', 'vendor/jqModal/jqModal.js', 'js/script.js');
+$styles = array('css/reset.css', 'css/cms-normalize.css', 'css/site.css', 'vendor/cwmModal/cwmModal.css');
+$scripts = array('vendor/jquery.load.js', 'vendor/cwmModal/cwmModal.jquery.js', 'js/script.js');
 
 if ( $user == 'admin' || $user == 'editor' ) {
 	$styles[] = 'css/wordlets.css';

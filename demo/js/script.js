@@ -11,6 +11,8 @@ $('body')
 
 $(function() {
 
+if ( $.wordlets == undefined ) return;
+
 var $modal = $.cwmModal.getModal().$modal.addClass('cms');
 
 $.wordlets.open = function(href) {
@@ -33,11 +35,6 @@ $.wordlets.open = function(href) {
 			});
 		})
 		;
-	/*var jqm = $modal.data('jqm');
-	jqm.ajax = href.replace(' ', '%20');
-
-	$modal.data('jqm', jqm);
-	$modal.jqmShow();*/
 };
 
 });

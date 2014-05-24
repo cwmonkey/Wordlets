@@ -104,6 +104,78 @@ $title = new \Wordlets\Wordlet(
 );
 $wordlets->saveObject($title, 1);
 
+$content = new \Wordlets\Wordlet(
+	'mysite-index',
+	'Content',
+	null,
+	array(
+		'multi' => array(
+			'type' => 'multi',
+			'html' => 'none',
+			'format' => 'simple',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'multi' => 'A lone of text in a paragraph tag.
+
+Another line
+with a br.'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($content, 1);
+
+$footer = new \Wordlets\Wordlet(
+	'_site',
+	'Footer',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'Site Footer'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($footer, 1);
+
+$footer = new \Wordlets\Wordlet(
+	'mysite',
+	'MySite Footer',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'MySite Footer'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($footer, 1);
+
 $navs = new \Wordlets\Wordlet(
 	'mysite',
 	'navs',

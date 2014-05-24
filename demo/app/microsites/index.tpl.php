@@ -66,4 +66,8 @@
 			<?=$nmblock->single(false) ?>
 		</h3>
 	<? endif ?>
+
+	<p>
+		<a href="/demo/?page=mysite-index">Microsite: MySite</a>
+	</p>
 </div>

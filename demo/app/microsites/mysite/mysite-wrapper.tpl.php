@@ -16,5 +16,5 @@
 		<?=$content ?>
 	</main>
 
-	<div id="mysite_footer">MySite Footer</div>
+	<div id="mysite_footer"><?=w('MySite Footer') ?></div>
 </div>

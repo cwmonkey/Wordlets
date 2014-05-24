@@ -186,7 +186,7 @@ $navs = new \Wordlets\Wordlet(
 			'html' => 'none',
 			'format' => 'none',
 			'order' => 0,
-			'show_markup' => 1,
+			'show_markup' => 0,
 		),
 		'href' => array(
 			'type' => 'single',

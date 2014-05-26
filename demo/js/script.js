@@ -1,11 +1,17 @@
 (function(window, $, undefined) {
 
 $('body')
-	.delegate('#menu a', 'click', function(e) {
+	.delegate('#menu a.config', 'click', function(e) {
 		e.preventDefault();
 		$.get(this.href, function() {
 			document.location.reload();
 		});
+	})
+	.delegate('a', 'click focus hover', function() {
+		if ( !this.href.match(/^mailto:/) 
+			&& (this.hostname != document.location.hostname) ) {
+			this.target = '_blank';
+		}
 	})
 	;
 

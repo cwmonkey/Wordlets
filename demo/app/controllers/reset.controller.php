@@ -104,6 +104,29 @@ $title = new \Wordlets\Wordlet(
 );
 $wordlets->saveObject($title, 1);
 
+$meta = new \Wordlets\Wordlet(
+	'_site',
+	'Meta Description',
+	null,
+	array(
+		'single' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'order' => 0,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'single' => 'Wordlets, a cms thing'
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($meta, 1);
+
 $content = new \Wordlets\Wordlet(
 	'mysite-index',
 	'Content',

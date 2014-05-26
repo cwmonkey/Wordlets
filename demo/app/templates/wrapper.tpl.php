@@ -18,19 +18,24 @@
 
 <? if ( $user == 'admin' || $user == 'editor' ): ?>
 	<div id="wordlet_page_config">
-		<?=w('Meta Description') ?>
+		<p>Meta Description: <?=w('Meta Description') ?></p>
 	</div>
 <? endif ?>
 
 <div id="site_wrapper">
 	<header id="site_header" role="banner">
+		<p class="source">
+			<a href="https://github.com/cwmonkey/Wordlets/blob/master/demo/app/templates/wrapper.tpl.php">wrapper.tpl.php on github</a>
+		</p>
 		<h2 id="site_title"><?=w('Site Title') ?></h2>
 		<nav id="menu">
-			<a href="?user=admin">Admin</a>
-			<a href="?user=editor">Editor</a>
-			<a href="?user=user">User</a>
-			<a href="?do=delete">Delete All</a>
-			<a href="?do=reset">Reset</a>
+			<a class="config" href="?user=admin">Admin</a>
+			<a class="config" href="?user=editor">Editor</a>
+			<a class="config" href="?user=user">User</a>
+			<a class="config" href="?do=delete">Delete All</a>
+			<a class="config" href="?do=reset">Reset</a>
+
+			<a href="/demo/?page=mysite-index">Microsite Example</a>
 		</nav>
 	</header>
 

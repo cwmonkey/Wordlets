@@ -1,4 +1,7 @@
 <div id="mysite_wrapper">
+	<p class="source">
+		<a href="https://github.com/cwmonkey/Wordlets/blob/master/demo/app/microsites/mysite/mysite-wrapper.tpl.php">mysite-wrapper.tpl.php on github</a>
+	</p>
 	<div id="mysite_header">
 		<h1 id="mysite_title">
 			<a href="/demo/?page=mysite-index"><?=w('MySite Title') ?></a>

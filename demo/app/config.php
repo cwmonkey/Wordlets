@@ -8,7 +8,7 @@ $routes = array(
 	'index' => array(
 		'title' => 'Site Index',
 		'url' => '/demo',
-		'templates' => array('index'),
+		'templates' => array('templates/index'),
 		'load' => array('_site', 'index'),
 	),
 
@@ -19,7 +19,7 @@ $routes = array(
 	'mysite-index' => array(
 		'title' => 'MySite Index',
 		'url' => '/demo/?page=mysite-index',
-		'templates' => array('mysite/mysite-index', 'mysite/mysite-wrapper'),
+		'templates' => array('microsites/mysite/mysite-index', 'microsites/mysite/mysite-wrapper'),
 		'stylesheets' => array('app/microsites/mysite/mysite.css'),
 		'javascripts' => array('app/microsites/mysite/mysite.js'),
 		'load' => array('_site', 'mysite', 'mysite-index'),

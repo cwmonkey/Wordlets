@@ -20,8 +20,18 @@ if ( !$page ) {
 	$page = $routes['index'];
 }
 
-$styles = array('css/reset.css', 'css/cms-normalize.css', 'css/site.css', 'vendor/cwmModal/cwmModal.css');
-$scripts = array('vendor/jquery.load.js', 'vendor/cwmModal/cwmModal.jquery.js', 'js/script.js');
+$styles = array(
+	'css/reset.css',
+	'css/cms-normalize.css',
+	'css/site.css',
+	'vendor/cwmModal/cwmModal.css'
+);
+
+$scripts = array(
+	'vendor/jquery.load.js',
+	'vendor/cwmModal/cwmModal.jquery.js',
+	'js/script.js'
+);
 
 if ( $user == 'admin' || $user == 'editor' ) {
 	$styles[] = 'css/wordlets.css';
@@ -37,7 +47,7 @@ foreach ( $page['load'] as $load ) {
 
 foreach ( $page['templates'] as $tpl ) {
 	ob_start();
-	include($app . '/microsites/' . $tpl . '.tpl.php');
+	include($app . '/' . $tpl . '.tpl.php');
 	$content = ob_get_contents();
 	ob_end_clean();
 }

@@ -52,6 +52,10 @@ form {
 					Name:
 					<input type="text" id="attr_<?=$i ?>_name" name="attr[<?=$i ?>][name]" value="<?=$attr->name ?>">
 				</label>
+				<label for="attr_<?=$i ?>_idx">
+					Order:
+					<input type="number" id="attr_<?=$i ?>_idx" name="attr[<?=$i ?>][idx]" value="<?=$attr->idx ?>">
+				</label>
 				<label for="attr_<?=$i ?>_show_markup">
 					<input type="checkbox" id="attr_<?=$i ?>_show_markup" name="attr[<?=$i ?>][show_markup]" value="1" <?=($attr->show_markup)?'checked':'' ?>>
 					Show Wordlet Markup

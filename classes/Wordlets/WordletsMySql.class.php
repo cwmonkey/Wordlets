@@ -62,7 +62,7 @@ class WordletsMySql extends WordletsBase {
 		$page_row = $page_rows[0];
 		$page = $page_row->name;
 
-		$attr_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}attr WHERE object_id=:object_id");
+		$attr_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}attr WHERE object_id=:object_id ORDER BY idx ASC");
 		$attr_result = $attr_query->execute(array(':object_id' => $object_id));
 		$attr_rows = $attr_query->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -140,7 +140,7 @@ class WordletsMySql extends WordletsBase {
 		}
 
 		// Attrs
-		$attr_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}attr WHERE name=:name AND object_id=:object_id");
+		$attr_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}attr WHERE name=:name AND object_id=:object_id ORDER BY idx ASC");
 		$attr_objs = array();
 		$attr_ids = array();
 		foreach ( $object->Attrs as $name => $attr ) {
@@ -151,7 +151,7 @@ class WordletsMySql extends WordletsBase {
 				$attr_row = $attr_rows[0];
 
 				$attr_update_query = $this->pdo->prepare("UPDATE {$this->tablePrepend}attr
-					SET type=:type, html=:html, format=:format, name=:name, info=:info, show_markup=:show_markup
+					SET type=:type, html=:html, format=:format, name=:name, info=:info, show_markup=:show_markup, idx=:idx
 					WHERE id=:id");
 
 				$attr['info'] = '';
@@ -163,6 +163,7 @@ class WordletsMySql extends WordletsBase {
 					':format' => $attr['format'],
 					':name' => $name,
 					':info' => $attr['info'],
+					':idx' => $attr['idx'],
 					':show_markup' => $attr['show_markup'],
 				));
 
@@ -171,8 +172,8 @@ class WordletsMySql extends WordletsBase {
 			// Make new Attr
 			} else {
 				$attr_insert_query = $this->pdo->prepare("INSERT INTO {$this->tablePrepend}attr
-					(object_id, type, html, format, name, info, show_markup)
-					VALUES(:object_id, :type, :html, :format, :name, :info, :show_markup)");
+					(object_id, idx, type, html, format, name, info, show_markup)
+					VALUES(:object_id, :idx, :type, :html, :format, :name, :info, :show_markup)");
 
 				$attr['info'] = '';
 
@@ -183,6 +184,7 @@ class WordletsMySql extends WordletsBase {
 					':format' => $attr['format'],
 					':name' => $name,
 					':info' => $attr['info'],
+					':idx' => $attr['idx'],
 					':show_markup' => $attr['show_markup'],
 				));
 				$attr_id = $this->pdo->lastInsertId();
@@ -229,7 +231,6 @@ class WordletsMySql extends WordletsBase {
 					));
 				}
 			}
-
 		}
 
 		// Remove old values

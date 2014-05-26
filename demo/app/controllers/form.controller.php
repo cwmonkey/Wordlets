@@ -99,7 +99,7 @@ if ( $id ) {
 				'html' => 'none',
 				'format' => 'none',
 				'info' => '',
-				'order' => 0,
+				'idx' => 0,
 				'show_markup' => 1,
 				'value' => '',
 			),
@@ -155,13 +155,25 @@ if ( $action == 'configure' ) {
 	// Attrs
 
 	// Make a blank attr for new attrs
-	$battr = array('name' => '', 'show_markup' => false, 'type' => 'single', 'html' => 'none', 'format' => 'none', 'info' => '');
+	$battr = array(
+		'name' => '',
+		'show_markup' => false,
+		'type' => 'single',
+		'html' => 'none',
+		'format' => 'none',
+		'info' => ''
+	);
 
 	// If this is a new wordlet, add a value field
 	if ( !$id ) $battr['value'] = '';
 
 	$attrs = $wordlet->Attrs;
+
+	foreach ( $attrs as $last_attr ) { }
+	$last_idx = $last_attr['idx'] + 1;
+
 	for ( $i = 0; $i < 11; $i++ ) {
+		$battr['idx'] = $last_idx + $i;
 		$attrs[] = $battr;
 	}
 
@@ -171,6 +183,7 @@ if ( $action == 'configure' ) {
 			$a->{$key} = $value;
 		}
 
+		// attrs with dropdowns
 		foreach ( $attrattrs as $akey => $attrattr) {
 			$a->{$akey . 's'} = array();
 			foreach ( $attrattr as $type ) {
@@ -195,7 +208,11 @@ if ( $action == 'configure' ) {
 	foreach( $wordlet->Values as $value ) {
 		$v = new stdClass();
 		foreach( $wordlet->Attrs as $name => $attr ) {
-			$v->{$name} = htmlspecialchars($value[$name]);
+			if ( isset($value[$name]) ) {
+				$v->{$name} = htmlspecialchars($value[$name]);
+			} else {
+				$v->{$name} = '';
+			}
 		}
 		$form->values[] = $v;
 	}

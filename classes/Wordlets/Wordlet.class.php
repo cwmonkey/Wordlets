@@ -61,10 +61,6 @@ class Wordlet implements \Iterator, \Countable {
 		$this->ShowMarkup = $show_markup;
 		$this->Cardinality = $cardinality;
 
-		/*foreach ( $values as $value ) {
-			$v = new WordletsValue($value, $config, $show_markup);
-			$this->Values[] = $v;
-		}*/
 		if ( is_array($values) ) $this->Values = $values;
 		$this->length = count($values);
 		if ( $attrs ) $this->Configured = true;
@@ -75,29 +71,15 @@ class Wordlet implements \Iterator, \Countable {
 	}
 
 	public function __call($name, $args = null) {
-		$show_markup = @$args[0];
 		$values = $this->GetCurrent();
 
 		if ( !isset($values[$name]) ) {
-			//$this->Values[$name] = new WordletsValue(null, $this->DefaultConfig);
 			$values[$name] = null;
-		}
-
-		if ( isset($this->Attrs[$name]) ) {
-			$config = $this->Attrs[$name];
-		} else {
-			$config = $this->DefaultConfig;
 		}
 
 		$value = $values[$name];
 
-		if ( $this->ShowMarkup && ($show_markup || ($show_markup === null && @$config['show_markup'])) ) {
-			return '<span ' . $this->HtmlAttrs() . '>'
-			. $this->Value($value, $config)
-			. '</span>';
-		} else {
-			return $this->Value($value, $config);
-		}
+		return $value;
 	}
 
 	public function __toString() {
@@ -122,63 +104,5 @@ class Wordlet implements \Iterator, \Countable {
 		}
 
 		return $var;
-	}
-
-	public function Value($value, $config) {
-		if ( is_array($value) ) {
-			foreach ( $value as $v ) {
-				$value = $v;
-				break;
-			}
-		}
-
-		if ( $value === null ) return '';
-
-		$value = $this->ValueHtml($value, @$config['html']);
-
-		$value = $this->ValueFormat($value, @$config['format']);
-
-		return $value;
-	}
-
-	public function ValueHtml($value, $config) {
-		switch ($config) {
-			case 'convert':
-				$value = htmlspecialchars($value);
-				break;
-			case 'safe':
-				$value = strip_tags($value, '<a><p><strong><b><i><em><div><span><br><br/><hr><hr/>');
-				break;
-			case 'all':
-				break;
-			case 'none':
-			default:
-				$value = strip_tags($value);
-				break;
-		}
-
-		return $value;
-	}
-
-	public function ValueFormat($value, $config) {
-		switch ($config) {
-			case 'simple':
-				$value = preg_replace("/[\r]+/", '', $value);
-				$value = '<p>' . preg_replace("/[\n]{2,}/", '</p><p>', $value) . '</p>';
-				$value = preg_replace("/[\n]/", '<br>', $value);
-				break;
-			case 'none':
-			default:
-				break;
-		}
-
-		return $value;
-	}
-
-	public function HtmlAttrs() {
-		if ( !$this->ShowMarkup ) return '';
-
-		$attrs = 'data-wordlet="wordlet" data-wordlet-configured="' . ($this->Configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
-		return $attrs;
 	}
 }

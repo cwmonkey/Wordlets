@@ -14,26 +14,23 @@ class WordletsBase {
 	}
 
 	public function getOne($name, $echo = true) {
+		// return cached wordlet
 		$keys = array_keys($this->pages);
 		for ( $i = count($keys) - 1; $i >= 0; $i-- ) {
 			$key = $keys[$i];
 			$page = $this->pages[$key];
 			if ( isset($page[$name]) ) {
 				$page[$name]->ShowMarkup = $this->showMarkup;
+				// Turn markup off if specified
 				if ( !$echo ) $page[$name]->ShowMarkup = false;
 				return $page[$name];
 			}
 		}
 
-		// Make a blank wordlet
+		// Make a blank wordlet to return
 		$show_markup = $this->showMarkup;
 		if ( !$echo ) $show_markup = false;
 		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $show_markup, 1);
-
-		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
-			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
-			return null;
-		}
 
 		$page[$name] = $wordlet;
 

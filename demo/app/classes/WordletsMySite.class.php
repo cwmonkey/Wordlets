@@ -11,4 +11,15 @@ class WordletsMySite extends \Wordlets\WordletsMySql {
 		$wordlet->ShowConfigure = $this->ShowConfigure;
 		return $wordlet;
 	}
+
+	public function getOne($name, $echo = true) {
+		$wordlet = parent::getOne($name, $echo);
+
+		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
+			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';
+			return null;
+		}
+
+		return $wordlet;
+	}
 }

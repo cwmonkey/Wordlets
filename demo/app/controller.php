@@ -14,6 +14,8 @@ class Site {
 		$name = str_replace('\\', '/', $name);
 		if ( is_readable('../classes/' . $name . '.class.php') ) {
 			require_once('../classes/' . $name . '.class.php');
+		} else if ( is_readable('app/classes/' . $name . '.class.php') ) {
+			require_once('app/classes/' . $name . '.class.php');
 		}
 	}
 }
@@ -22,67 +24,6 @@ spl_autoload_register('Site::loadClass');
 
 // Cheese a global variable for wordlet value replacements
 Site::$routes = $routes;
-
-// A front end wrapper for pretty wordlet output
-class WordletWrapper {
-	public $wordlets;
-	public function __construct($wordlets) {
-		$this->wordlets = $wordlets;
-	}
-
-	public function __get($name) {
-		return $this->__call($name);
-	}
-
-	public function __call($name, $args = array()) {
-		array_unshift($args, $name);
-		return call_user_func_array(array($this->wordlets, 'getOne'), $args);
-	}
-}
-
-// Classes to enhance default functionality of Wordlets
-class WordletsMySite extends \Wordlets\WordletsMySql {
-	public $ShowEdit = false;
-	public $ShowConfigure = false;
-
-	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1) {
-		$wordlet = new WordletMySite($page, $name, $id, $attrs, $values, $show_markup, $cardinality);
-		$wordlet->ShowEdit = $this->ShowEdit;
-		$wordlet->ShowConfigure = $this->ShowConfigure;
-		return $wordlet;
-	}
-}
-
-// Class to add a href to a form to edit wordlet
-class WordletMySite extends \Wordlets\Wordlet {
-	public $ShowEdit = false;
-	public $ShowConfigure = false;
-
-	public function HtmlAttrs() {
-		if ( !$this->ShowMarkup ) return '';
-
-		$attrs = parent::HtmlAttrs();
-		if ( $this->Configured ) {
-			if ( $this->ShowEdit ) $attrs .= ' data-wordlet-edit="?do=form&action=edit&id=' . $this->Id . '"';
-			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&id=' . $this->Id . '"';
-		} else {
-			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&page=' . $this->Page . '&name=' . $this->Name . '"';
-		}
-
-		return $attrs;
-	}
-
-
-	public function Value($value, $config) {
-		$value = parent::Value($value, $config);
-		foreach ( Site::$routes as $name => $route ) {
-			if ( isset($route['url']) ) {
-				$value = str_replace('{' . $name . '_url}', $route['url'], $value);
-			}
-		}
-		return $value;
-	}
-}
 
 Site::$Wordlets = $wordlets = new WordletsMySite('mysql:host=' . $dbaddr . ';dbname=' . $dbname, $dbuser, $dbpass, 'wordlet_');
 

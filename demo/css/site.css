@@ -26,7 +26,7 @@ a:hover {
 #site_footer,
 #site_header {
 	background: lightblue;
-	padding: .5em;
+	padding: 0 .5em .5em .5em;
 	display: inline-block;
 	width: 100%;
 	vertical-align: top;
@@ -53,4 +53,10 @@ a:hover {
 
 #wordlet_page_config {
 	background: yellow;
+}
+
+.source {
+	clear: both;
+	margin: .5em 0;
+	font-size: .75em;
 }

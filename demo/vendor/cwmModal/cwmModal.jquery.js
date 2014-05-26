@@ -136,10 +136,20 @@ Modal.prototype.position = function($el) {
 			$el.css({
 				left: left
 			});
+		} else {
+			left += $window.scrollLeft();
+			$el.css({
+				left: left
+			});
 		}
 
 		if ( mheight > wheight ) {
 			top = $window.scrollTop();
+			$el.css({
+				top: top
+			});
+		} else {
+			top += $window.scrollTop();
 			$el.css({
 				top: top
 			});

@@ -2,13 +2,24 @@
 
 $action = $_GET['action'];
 $id = NULL;
+$attr_id = ( isset($_GET['attr_id']) ) ? $_GET['attr_id'] : null;
+$val_id = ( isset($_GET['val_id']) ) ? $_GET['val_id'] : null;
 
 // POST
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	$index = ( isset($_GET['val_id']) ) ? $_GET['val_id'] : 0;
+
 	// Update wordlet
 	if ( isset($_POST['id']) ) {
 		$id = $_POST['id'];
 		$wordlet = $wordlets->getObjectsById($id);
+		if ( $attr_id ) {
+			$wordlet->AttrId = $attr_id;
+		}
+
+		if ( $val_id ) {
+			$wordlet->ValueId = $val_id;
+		}
 
 		// Update wordlet configuration
 		if ( $action == 'configure' ) {
@@ -22,6 +33,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			foreach ( $_POST['attr'] as $key => $attr ) {
 				if ( isset($attr['name']) && $attr['name'] ) {
 					$attr['show_markup'] = ( @$attr['show_markup'] ) ? 1 : 0;
+					$attr['instanced'] = ( @$attr['instanced'] ) ? 1 : 0;
 					$attrs[$attr['name']] = $attr;
 				}
 			}
@@ -35,13 +47,13 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			foreach ( $_POST['value'] as $value ) {
 				$set = false;
 				foreach ( $value as $k => $v ) {
-					if ( $v !== '' ) {
+					if ( $v['value'] !== '' ) {
 						$set = true;
 						break;
 					}
 				}
 
-				if ( $set ) $values[] = $value;
+				if ( $set ) $values[$index][] = $value;
 			}
 			$wordlet->Values = $values;
 			$wordlets->saveObject($wordlet, $wordlet->Cardinality);
@@ -55,8 +67,9 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		foreach ( $_POST['attr'] as $key => $attr ) {
 			if ( isset($attr['name']) && $attr['name'] ) {
 				$attr['show_markup'] = ( @$attr['show_markup'] ) ? 1 : 0;
+				$attr['instanced'] = ( @$attr['instanced'] ) ? 1 : 0;
 				$attrs[$attr['name']] = $attr;
-				$values[0][$attr['name']] = $attr['value'];
+				$values[0][$attr['name']]['value'] = $attr['value'];
 			}
 		}
 
@@ -69,6 +82,14 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			false,
 			$_POST['cardinality']
 		);
+
+		if ( $attr_id ) {
+			$wordlet->AttrId = $attr_id;
+		}
+
+		if ( $val_id ) {
+			$wordlet->ValueId = $val_id;
+		}
 
 		$id = $wordlets->saveObject($wordlet, $_POST['cardinality']);
 	}
@@ -96,6 +117,7 @@ if ( $id ) {
 			'single' => array(
 				'name' => 'single',
 				'type' => 'single',
+				'instanced' => 0,
 				'html' => 'none',
 				'format' => 'none',
 				'info' => '',
@@ -105,8 +127,8 @@ if ( $id ) {
 			),
 		),
 		$values = array(
-			array(
-				'single' => 'This is a Title'
+			$index => array(
+				'single' => array('value' => 'This is a Title'),
 			),
 		),
 		false,
@@ -159,6 +181,7 @@ if ( $action == 'configure' ) {
 		'name' => '',
 		'show_markup' => false,
 		'type' => 'single',
+		'instanced' => false,
 		'html' => 'none',
 		'format' => 'none',
 		'info' => ''
@@ -205,11 +228,17 @@ if ( $action == 'configure' ) {
 	$form->attrs = array();
 	$form->id = $id;
 
-	foreach( $wordlet->Values as $value ) {
+	if ( $val_id ) {
+		$values = $wordlet->Values[$val_id];
+	} else {
+		$values = $wordlet->Values;
+	}
+
+	foreach( $values as $value ) {
 		$v = new stdClass();
 		foreach( $wordlet->Attrs as $name => $attr ) {
 			if ( isset($value[$name]) ) {
-				$v->{$name} = htmlspecialchars($value[$name]);
+				$v->{$name} = htmlspecialchars($value[$name]['value']);
 			} else {
 				$v->{$name} = '';
 			}

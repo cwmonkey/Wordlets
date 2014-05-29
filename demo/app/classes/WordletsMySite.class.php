@@ -5,15 +5,19 @@ class WordletsMySite extends \Wordlets\WordletsMySql {
 	public $ShowEdit = false;
 	public $ShowConfigure = false;
 
-	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1) {
-		$wordlet = new WordletMySite($page, $name, $id, $attrs, $values, $show_markup, $cardinality);
+	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1, $instanced = false) {
+		$wordlet = new WordletMySite($page, $name, $id, $attrs, $values, $show_markup, $cardinality, $instanced);
 		$wordlet->ShowEdit = $this->ShowEdit;
 		$wordlet->ShowConfigure = $this->ShowConfigure;
+		$wordlet->Wordlets = $this;
 		return $wordlet;
 	}
 
-	public function getOne($name, $echo = true) {
+	public function getOne($name, $echo = true, $attr_id = null, $value_id = null) {
 		$wordlet = parent::getOne($name, $echo);
+		$wordlet->AttrId = $attr_id;
+		$wordlet->ValueId = $value_id;
+		$wordlet->InstanceValues = ( $value_id ) ? $wordlet->Values[$value_id] : null;
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';

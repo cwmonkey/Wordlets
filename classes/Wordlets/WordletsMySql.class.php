@@ -74,13 +74,22 @@ class WordletsMySql extends WordletsBase {
 			$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE attr_id=:attr_id ORDER BY idx ASC");
 			$value_result = $value_query->execute(array(':attr_id' => $attr_id));
 			$value_rows = $value_query->fetchAll(\PDO::FETCH_ASSOC);
-			foreach ( $value_rows as $value_row ) {
-				$idx = $value_row['idx'];
-				$values[$idx][$attr_name] = $value_row['value'];
+
+			if ( $object_row->attr_id ) {
+				foreach ( $value_rows as $value_row ) {
+					$idx = $value_row['idx'];
+					$val_id = $value_row['val_id'];
+					$values[$val_id][$idx][$attr_name] = $value_row;
+				}
+			} else {
+				foreach ( $value_rows as $value_row ) {
+					$idx = $value_row['idx'];
+					$values[$idx][$attr_name] = $value_row;
+				}
 			}
 		}
 
-		$wordlet_object = $this->getWordlet($page, $object_row->name, $object_row->id, $attrs, $values, $this->showMarkup, $object_row->cardinality);
+		$wordlet_object = $this->getWordlet($page, $object_row->name, $object_row->id, $attrs, $values, $this->showMarkup, $object_row->cardinality, $object_row->instanced);
 
 		return $wordlet_object;
 	}
@@ -112,29 +121,32 @@ class WordletsMySql extends WordletsBase {
 		// Make new object
 		if ( !count($object_rows) ) {
 			$object_query = $this->pdo->prepare("INSERT INTO {$this->tablePrepend}object
-				(page_id, name, cardinality)
-				VALUES(:page_id, :name, :cardinality)");
+				(page_id, name, attr_id, cardinality)
+				VALUES(:page_id, :name, :attr_id, :cardinality)");
 
 			$object_result = $object_query->execute(array(
 				':page_id' => $page_id,
 				':name' => $object->Name,
+				':attr_id' => $object->AttrId,
 				':cardinality' => $cardinality,
 			));
 
 			$object_id = $this->pdo->lastInsertId();
+
 		// Update existing object
 		} else {
 			$object_row = $object_rows[0];
 			$object_id = $object_row->id;
 
 			$object_query = $this->pdo->prepare("UPDATE {$this->tablePrepend}object
-				SET name=:name, page_id=:page_id, cardinality=:cardinality
+				SET name=:name, page_id=:page_id, cardinality=:cardinality, instanced=:instanced
 				WHERE id=:id");
 
 			$object_result = $object_query->execute(array(
 				':id' => $object_id,
 				':cardinality' => $cardinality,
 				':name' => $object->Name,
+				':instanced' => $object->Instanced,
 				':page_id' => $page_id,
 			));
 		}
@@ -151,7 +163,7 @@ class WordletsMySql extends WordletsBase {
 				$attr_row = $attr_rows[0];
 
 				$attr_update_query = $this->pdo->prepare("UPDATE {$this->tablePrepend}attr
-					SET type=:type, html=:html, format=:format, name=:name, info=:info, show_markup=:show_markup, idx=:idx
+					SET type=:type, instanced=:instanced, html=:html, format=:format, name=:name, info=:info, show_markup=:show_markup, idx=:idx
 					WHERE id=:id");
 
 				$attr['info'] = '';
@@ -161,25 +173,27 @@ class WordletsMySql extends WordletsBase {
 					':type' => $attr['type'],
 					':html' => $attr['html'],
 					':format' => $attr['format'],
+					':instanced' => ( @$attr['instanced'] ) ? 1 : 0,
 					':name' => $name,
 					':info' => $attr['info'],
 					':idx' => $attr['idx'],
 					':show_markup' => $attr['show_markup'],
 				));
 
-				$attr_objs[$name] = $attr_row->id;
+				$attr['id'] = $attr_row->id;
+				$attr_objs[$name] = $attr;
 				$attr_ids[] = $attr_row->id;
 			// Make new Attr
 			} else {
 				$attr_insert_query = $this->pdo->prepare("INSERT INTO {$this->tablePrepend}attr
-					(object_id, idx, type, html, format, name, info, show_markup)
-					VALUES(:object_id, :idx, :type, :html, :format, :name, :info, :show_markup)");
-
+					(object_id, idx, instanced, type, html, format, name, info, show_markup)
+					VALUES(:object_id, :idx, :instanced, :type, :html, :format, :name, :info, :show_markup)");
 				$attr['info'] = '';
 
 				$attr_insert_result = $attr_insert_query->execute(array(
 					':object_id' => $object_id,
 					':type' => $attr['type'],
+					':instanced' => ( @$attr['instanced'] ) ? 1 : 0,
 					':html' => $attr['html'],
 					':format' => $attr['format'],
 					':name' => $name,
@@ -187,8 +201,11 @@ class WordletsMySql extends WordletsBase {
 					':idx' => $attr['idx'],
 					':show_markup' => $attr['show_markup'],
 				));
+
 				$attr_id = $this->pdo->lastInsertId();
-				$attr_objs[$name] = $attr_id;
+
+				$attr['id'] = $attr_id;
+				$attr_objs[$name] = $attr;
 				$attr_ids[] = $attr_id;
 			}
 		}
@@ -199,46 +216,83 @@ class WordletsMySql extends WordletsBase {
 		$attr_ids[] = $object_id;
 		$attr_delete_query->execute($attr_ids);
 
+		if ( $object->AttrId ) {
+			$values = $object->Values;
+		} else {
+			$values = array($object->Values);
+		}
+
 		// Values
-		$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE idx=:idx AND attr_id=:attr_id");
-		foreach ( $object->Values as $idx => $value ) {
-			foreach ( $value as $name => $val ) {
-				$attr_id = $attr_objs[$name];
-				$value_result = $value_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
+		//$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE idx=:idx AND attr_id=:attr_id");
+		$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE id=:id");
+?><pre><?
+var_export($values);
+?></pre><?
 
-				// Update existing value
-				if ( $value_result && ($value_rows = $value_query->fetchAll(\PDO::FETCH_OBJ)) ) {
-					$value_row = $value_rows[0];
+		foreach ( $values as $val_id => $object_values ) {
+			foreach ( $object_values as $idx => $value ) {
+				foreach ( $value as $name => $val ) {
+					$attr = $attr_objs[$name];
+					$attr_id = $attr['id'];
+					$value_id = @$val['id'];
+					//$value_result = $value_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
 
-					$value_update_query = $this->pdo->prepare("UPDATE {$this->tablePrepend}val
-						SET value=:value
-						WHERE id=:id");
+					// Update existing value
+					if ( $value_id && ($value_result = $value_query->execute(array(':id' => $value_id))) && ($value_rows = $value_query->fetchAll(\PDO::FETCH_OBJ)) ) {
+						$value_row = $value_rows[0];
 
-					$value_update_result = $value_update_query->execute(array(
-						':id' => $value_row->id,
-						':value' => $val,
-					));
-				// Add new value
-				} else {
-					$value_insert_query = $this->pdo->prepare("INSERT INTO {$this->tablePrepend}val
-						(value, idx, attr_id)
-						VALUES(:value, :idx, :attr_id)");
+						$value_update_query = $this->pdo->prepare(
+							"UPDATE
+								{$this->tablePrepend}val
+							SET
+								value=:value
+							WHERE
+								id=:id"
+						);
 
-					$value_insert_result = $value_insert_query->execute(array(
-						':value' => $val,
-						':idx' => $idx,
-						':attr_id' => $attr_id,
-					));
+						$value_update_result = $value_update_query->execute(array(
+							':id' => $value_row->id,
+							':value' => $val['value'],
+						));
+					// Add new value
+					} else {
+						$value_insert_query = $this->pdo->prepare(
+							"INSERT INTO
+								{$this->tablePrepend}val
+							(
+								value,
+								idx,
+								attr_id,
+								val_id
+							)
+							VALUES(
+								:value,
+								:idx,
+								:attr_id,
+								:val_id
+							)"
+						);
+						$value_insert_result = $value_insert_query->execute(array(
+							':idx' => $idx,
+							':attr_id' => $attr_id,
+							':val_id' => ( $object->AttrId ) ? $val_id : null,
+							':value' => $val['value'],
+						));
+var_dump($value_insert_query->errorInfo());
+					}
 				}
 			}
 		}
 
+		// TODO: Fix this to use id's or something
 		// Remove old values
 		$delete_values_query = $this->pdo->prepare("DELETE FROM {$this->tablePrepend}val WHERE idx > :idx AND attr_id = :attr_id");
-		foreach ( $object->Values as $value ) {
-			foreach ( $value as $name => $val ) {
-				$attr_id = $attr_objs[$name];
-				$delete_values_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
+		foreach ( $values as $val_id => $object_values ) {
+			foreach ( $object_values as $value ) {
+				foreach ( $value as $name => $val ) {
+					$attr_id = $attr_objs[$name]['id'];
+					$delete_values_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
+				}
 			}
 		}
 

@@ -30,14 +30,14 @@ class WordletsBase {
 		// Make a blank wordlet to return
 		$show_markup = $this->showMarkup;
 		if ( !$echo ) $show_markup = false;
-		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $show_markup, 1);
+		$wordlet = $this->getWordlet($this->currentPage, $name, null, null, null, $show_markup, 1, 0);
 
 		$page[$name] = $wordlet;
 
 		return $page[$name];
 	}
 
-	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false) {
-		return new Wordlet($page, $name, $id, $attrs, $values, $show_markup);
+	public function getWordlet($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $instanced = false) {
+		return new Wordlet($page, $name, $id, $attrs, $values, $show_markup, $instanced);
 	}
 }

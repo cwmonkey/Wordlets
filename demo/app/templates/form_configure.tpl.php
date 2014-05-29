@@ -51,6 +51,11 @@ form {
 				<label for="attr_<?=$i ?>_name">
 					Name:
 					<input type="text" id="attr_<?=$i ?>_name" name="attr[<?=$i ?>][name]" value="<?=$attr->name ?>">
+					(leave blank to ignore/delete)
+				</label>
+				<label for="attr_<?=$i ?>_instanced">
+					<input type="checkbox" id="attr_<?=$i ?>_instanced" name="attr[<?=$i ?>][instanced]" value="1" <?=($attr->instanced)?'checked':'' ?>>
+					Instanced Wordlet Reference
 				</label>
 				<label for="attr_<?=$i ?>_idx">
 					Order:

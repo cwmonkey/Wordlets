@@ -4,6 +4,8 @@
 class WordletMySite extends \Wordlets\Wordlet {
 	public $ShowEdit = false;
 	public $ShowConfigure = false;
+	public $Wordlets;
+	public $AttrId;
 
 	// Helper attributes for ajax
 	public function HtmlAttrs() {
@@ -12,10 +14,10 @@ class WordletMySite extends \Wordlets\Wordlet {
 		$attrs = 'data-wordlet="wordlet" data-wordlet-configured="' . ($this->Configured?'true':'false') . '" data-wordlet-name="' . $this->Name . '" data-wordlet-page="' . $this->Page . '"';
 
 		if ( $this->Configured ) {
-			if ( $this->ShowEdit ) $attrs .= ' data-wordlet-edit="?do=form&action=edit&id=' . $this->Id . '"';
-			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&id=' . $this->Id . '"';
+			if ( $this->ShowEdit ) $attrs .= ' data-wordlet-edit="?do=form&action=edit&id=' . $this->Id . (($this->AttrId)?'&attr_id=' . $this->AttrId:'') . (($this->ValueId)?'&val_id=' . $this->ValueId:'') . '"';
+			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&id=' . $this->Id . (($this->AttrId)?'&attr_id=' . $this->AttrId:'') . (($this->ValueId)?'&val_id=' . $this->ValueId:'') . '"';
 		} else {
-			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&page=' . $this->Page . '&name=' . $this->Name . '"';
+			if ( $this->ShowConfigure ) $attrs .= ' data-wordlet-configure="?do=form&action=configure&page=' . $this->Page . '&name=' . $this->Name . (($this->AttrId)?'&attr_id=' . $this->AttrId:'') . (($this->ValueId)?'&val_id=' . $this->ValueId:'') . '"';
 		}
 
 		return $attrs;
@@ -84,7 +86,7 @@ class WordletMySite extends \Wordlets\Wordlet {
 	}
 
 	public function __call($name, $args = null) {
-		$value = parent::__call($name, $args);
+		$value = parent::getValue($name, $args);
 
 		$show_markup = @$args[0];
 
@@ -93,6 +95,15 @@ class WordletMySite extends \Wordlets\Wordlet {
 		} else {
 			$config = $this->DefaultConfig;
 		}
+
+		if ( @$config['instanced'] ) {
+			$value_id = ( $value ) ? $value['id'] : null;
+
+			$wordlet = $this->Wordlets->getOne($this->Name . ':' . $config['name'], true, $config['id'], $value_id);
+			return $wordlet;
+		}
+
+		$value = ( $value ) ? $value['value'] : $value;
 
 		$value = $this->Value($value, $config);
 

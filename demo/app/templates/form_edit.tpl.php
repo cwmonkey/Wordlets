@@ -26,17 +26,17 @@ form {
 				<? foreach ( $form->attrs as $ia => $attr ): ?>
 					<label for="value_<?=$iv ?>_<?=$ia ?>">
 						<? if ( $attr->type == 'bool' ): ?>
-							<input id="value_<?=$iv ?>_<?=$ia ?>" type="checkbox" value="1" name="value[<?=$iv ?>][<?=@$attr->name ?>]" <?=@$value->{$attr->name} ? 'checked' : '' ?>>
+							<input id="value_<?=$iv ?>_<?=$ia ?>" type="checkbox" value="1" name="value[<?=$iv ?>][<?=@$attr->name ?>][value]" <?=@$value->{$attr->name} ? 'checked' : '' ?>>
 						<? endif ?>
 
 						<?=$attr->name ?>:
 
 						<? if ( $attr->type == 'single' ): ?>
-							<input id="value_<?=$iv ?>_<?=$ia ?>" type="text" value="<?=@$value->{$attr->name} ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>]">
+							<input id="value_<?=$iv ?>_<?=$ia ?>" type="text" value="<?=@$value->{$attr->name} ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>][value]">
 						<? elseif ( $attr->type == 'number' ): ?>
-							<input id="value_<?=$iv ?>_<?=$ia ?>" type="number" value="<?=@$value->{$attr->name} ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>]">
+							<input id="value_<?=$iv ?>_<?=$ia ?>" type="number" value="<?=@$value->{$attr->name} ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>][value]">
 						<? elseif ( $attr->type == 'multi' ): ?>
-							<textarea id="value_<?=$iv ?>_<?=$ia ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>]"><?=@$value->{$attr->name} ?></textarea>
+							<textarea id="value_<?=$iv ?>_<?=$ia ?>" name="value[<?=$iv ?>][<?=@$attr->name ?>][value]"><?=@$value->{$attr->name} ?></textarea>
 						<? endif ?>
 					</label>
 				<? endforeach ?>

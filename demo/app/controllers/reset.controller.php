@@ -1,5 +1,8 @@
 <?php
 
+$query = $pdo->prepare("TRUNCATE {$tablePrepend}page");
+$result = $query->execute();
+
 $query = $pdo->prepare("TRUNCATE {$tablePrepend}val");
 $result = $query->execute();
 
@@ -7,9 +10,6 @@ $query = $pdo->prepare("TRUNCATE {$tablePrepend}attr");
 $result = $query->execute();
 
 $query = $pdo->prepare("TRUNCATE {$tablePrepend}object");
-$result = $query->execute();
-
-$query = $pdo->prepare("TRUNCATE {$tablePrepend}page");
 $result = $query->execute();
 
 $site_title = new \Wordlets\Wordlet(
@@ -27,7 +27,7 @@ $site_title = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is the Site Title'
+			'single' => array('value' => 'This is the Site Title'),
 		),
 	),
 	false,
@@ -50,7 +50,7 @@ $title = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is the Page Title'
+			'single' => array('value' => 'This is the Page Title'),
 		),
 	),
 	false,
@@ -73,7 +73,7 @@ $title = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is the MySite Title'
+			'single' => array('value' => 'This is the MySite Title'),
 		),
 	),
 	false,
@@ -96,13 +96,58 @@ $title = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is the MySite Index Page Title'
+			'single' => array('value' => 'This is the MySite Index Page Title'),
 		),
 	),
 	false,
 	1
 );
 $wordlets->saveObject($title, 1);
+
+$schools = new \Wordlets\Wordlet(
+	'mysite-index',
+	'Schools',
+	null,
+	array(
+		'Title' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'idx' => 0,
+			'show_markup' => 1,
+		),
+		'Image' => array(
+			'type' => 'single',
+			'html' => 'none',
+			'format' => 'none',
+			'idx' => 1,
+			'show_markup' => 1,
+			'instanced' => 1,
+		),
+		'Description' => array(
+			'type' => 'multi',
+			'html' => 'safe',
+			'format' => 'simple',
+			'idx' => 2,
+			'show_markup' => 1,
+		),
+	),
+	$values = array(
+		array(
+			'Title' => array('value' => 'School One'),
+			'Image' => array('value' => ''),
+			'Description' => array('value' => 'We is best.'),
+		),
+		array(
+			'Title' => array('value' => 'School Two'),
+			'Image' => array('value' => ''),
+			'Description' => array('value' => 'We is better.'),
+		),
+	),
+	false,
+	1
+);
+$wordlets->saveObject($schools, 2);
 
 $meta = new \Wordlets\Wordlet(
 	'_site',
@@ -119,7 +164,7 @@ $meta = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'Wordlets, a cms thing'
+			'single' => array('value' => 'Wordlets, a cms thing'),
 		),
 	),
 	false,
@@ -142,10 +187,10 @@ $content = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'multi' => 'A lone of text in a paragraph tag.
+			'multi' => array('value' => 'A lone of text in a paragraph tag.
 
 Another line
-with a br.'
+with a br.'),
 		),
 	),
 	false,
@@ -168,7 +213,7 @@ $footer = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => '<a href="https://github.com/cwmonkey/Wordlets">Source on GIT</a>'
+			'single' => array('value' => '<a href="https://github.com/cwmonkey/Wordlets">Source on GIT</a>'),
 		),
 	),
 	false,
@@ -191,7 +236,7 @@ $footer = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'MySite Footer'
+			'single' => array('value' => 'MySite Footer'),
 		),
 	),
 	false,
@@ -221,20 +266,20 @@ $navs = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'Home',
-			'href' => '{mysite-index_url}'
+			'single' => array('value' => 'Home'),
+			'href' => array('value' => '{mysite-index_url}'),
 		),
 		array(
-			'single' => 'Page 1',
-			'href' => '{mysite-page1_url}'
+			'single' => array('value' => 'Page 1'),
+			'href' => array('value' => '{mysite-page1_url}'),
 		),
 		array(
-			'single' => 'Page 2',
-			'href' => '{mysite-page2_url}'
+			'single' => array('value' => 'Page 2'),
+			'href' => array('value' => '{mysite-page2_url}'),
 		),
 		array(
-			'single' => 'Page 3',
-			'href' => '{mysite-page3_url}'
+			'single' => array('value' => 'Page 3'),
+			'href' => array('value' => '{mysite-page3_url}'),
 		),
 	),
 	false,
@@ -264,8 +309,8 @@ $image = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'src' => 'http://i.imgur.com/9fOG9nlb.jpg',
-			'alt' => 'This is some Alt'
+			'src' => array('value' => 'http://i.imgur.com/9fOG9nlb.jpg'),
+			'alt' => array('value' => 'This is some Alt'),
 		),
 	),
 	false,
@@ -295,20 +340,20 @@ $images = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'src' => '//placehold.io/100/100.png?text=Sucka',
-			'alt' => 'This is some Alt1'
+			'src' => array('value' => '//placehold.io/100/100.png?text=Sucka'),
+			'alt' => array('value' => 'This is some Alt1'),
 		),
 		array(
-			'src' => 'http://placehold.it/100x100',
-			'alt' => 'This is some Alt2'
+			'src' => array('value' => 'http://placehold.it/100x100'),
+			'alt' => array('value' => 'This is some Alt2'),
 		),
 		array(
-			'src' => 'http://dummyimage.com/100x100/ff0000/ffffff',
-			'alt' => 'This is some Alt3'
+			'src' => array('value' => 'http://dummyimage.com/100x100/ff0000/ffffff'),
+			'alt' => array('value' => 'This is some Alt3'),
 		),
 		array(
-			'src' => 'http://fpoimg.com/100x100?text=Sucka',
-			'alt' => 'This is some Alt4'
+			'src' => array('value' => 'http://fpoimg.com/100x100?text=Sucka'),
+			'alt' => array('value' => 'This is some Alt4'),
 		),
 	),
 	false,
@@ -331,7 +376,7 @@ $subtitle = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is a Sub Title'
+			'single' => array('value' => 'This is a Sub Title'),
 		),
 	),
 	false,
@@ -354,16 +399,16 @@ $list = new \Wordlets\Wordlet(
 	),
 	$values = array(
 		array(
-			'single' => 'This is the first list item'
+			'single' => array('value' => 'This is the first list item'),
 		),
 		array(
-			'single' => 'This is the second list item'
+			'single' => array('value' => 'This is the second list item'),
 		),
 		array(
-			'single' => 'This is the third list item'
+			'single' => array('value' => 'This is the third list item'),
 		),
 		array(
-			'single' => 'This is the fourth list item'
+			'single' => array('value' => 'This is the fourth list item'),
 		),
 	),
 	false,

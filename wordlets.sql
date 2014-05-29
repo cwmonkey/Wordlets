@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 26, 2014 at 06:23 AM
+-- Generation Time: May 29, 2014 at 06:45 AM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -32,7 +32,8 @@ DROP TABLE IF EXISTS `wordlet_attr`;
 CREATE TABLE IF NOT EXISTS `wordlet_attr` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `object_id` int(11) NOT NULL,
-  `type_id` int(11) DEFAULT NULL,
+  `instance_object_id` int(11) DEFAULT NULL,
+  `instanced` tinyint(1) NOT NULL DEFAULT '0',
   `idx` int(11) NOT NULL,
   `type` varchar(64) NOT NULL,
   `html` varchar(32) NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `wordlet_attr` (
   `show_markup` tinyint(1) NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -54,11 +55,14 @@ DROP TABLE IF EXISTS `wordlet_object`;
 CREATE TABLE IF NOT EXISTS `wordlet_object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` int(11) NOT NULL,
+  `instanced` tinyint(1) NOT NULL DEFAULT '0',
+  `attr_id` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
   `cardinality` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  KEY `page_id` (`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+  KEY `page_id` (`page_id`),
+  KEY `page_id_2` (`page_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -86,11 +90,16 @@ DROP TABLE IF EXISTS `wordlet_val`;
 CREATE TABLE IF NOT EXISTS `wordlet_val` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `attr_id` int(11) NOT NULL,
+  `object_id` int(11) DEFAULT NULL,
+  `val_id` int(11) DEFAULT NULL,
   `idx` int(11) NOT NULL,
   `value` text NOT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
+  PRIMARY KEY (`id`),
+  KEY `object_id` (`object_id`),
+  KEY `val_id` (`val_id`),
+  KEY `attr_id` (`attr_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=86 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

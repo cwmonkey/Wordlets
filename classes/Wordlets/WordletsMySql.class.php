@@ -225,9 +225,6 @@ class WordletsMySql extends WordletsBase {
 		// Values
 		//$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE idx=:idx AND attr_id=:attr_id");
 		$value_query = $this->pdo->prepare("SELECT * FROM {$this->tablePrepend}val WHERE id=:id");
-?><pre><?
-var_export($values);
-?></pre><?
 
 		foreach ( $values as $val_id => $object_values ) {
 			foreach ( $object_values as $idx => $value ) {
@@ -278,7 +275,6 @@ var_export($values);
 							':val_id' => ( $object->AttrId ) ? $val_id : null,
 							':value' => $val['value'],
 						));
-var_dump($value_insert_query->errorInfo());
 					}
 				}
 			}

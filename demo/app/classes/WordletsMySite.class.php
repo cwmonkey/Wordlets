@@ -17,7 +17,11 @@ class WordletsMySite extends \Wordlets\WordletsMySql {
 		$wordlet = parent::getOne($name, $echo);
 		$wordlet->AttrId = $attr_id;
 		$wordlet->ValueId = $value_id;
-		$wordlet->InstanceValues = ( $value_id ) ? $wordlet->Values[$value_id] : null;
+		if ( $value_id ) {
+			$wordlet->InstanceValues = ( isset($wordlet->Values[$value_id]) ) ? $wordlet->Values[$value_id] : array();
+		} else {
+			$wordlet->InstanceValues = null;
+		}
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';

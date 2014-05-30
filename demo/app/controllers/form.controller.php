@@ -4,10 +4,10 @@ $action = $_GET['action'];
 $id = NULL;
 $attr_id = ( isset($_GET['attr_id']) ) ? $_GET['attr_id'] : null;
 $val_id = ( isset($_GET['val_id']) ) ? $_GET['val_id'] : null;
+$index = ( isset($_GET['val_id']) ) ? $_GET['val_id'] : 0;
 
 // POST
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-	$index = ( isset($_GET['val_id']) ) ? $_GET['val_id'] : 0;
 
 	// Update wordlet
 	if ( isset($_POST['id']) ) {
@@ -63,13 +63,18 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 		$page_name = $_POST['page_id'];
 
 		$attrs = array();
-		$values = array(array());
+		$values = array();
 		foreach ( $_POST['attr'] as $key => $attr ) {
 			if ( isset($attr['name']) && $attr['name'] ) {
 				$attr['show_markup'] = ( @$attr['show_markup'] ) ? 1 : 0;
 				$attr['instanced'] = ( @$attr['instanced'] ) ? 1 : 0;
 				$attrs[$attr['name']] = $attr;
-				$values[0][$attr['name']]['value'] = $attr['value'];
+
+				if ( $val_id ) {
+					$values[$val_id][0][$attr['name']]['value'] = $attr['value'];
+				} else {
+					$values[$attr['name']]['value'] = $attr['value'];
+				}
 			}
 		}
 
@@ -229,7 +234,7 @@ if ( $action == 'configure' ) {
 	$form->id = $id;
 
 	if ( $val_id ) {
-		$values = $wordlet->Values[$val_id];
+		$values = isset($wordlet->Values[$val_id]) ? $wordlet->Values[$val_id] : array();
 	} else {
 		$values = $wordlet->Values;
 	}
@@ -246,7 +251,7 @@ if ( $action == 'configure' ) {
 		$form->values[] = $v;
 	}
 
-	$max = ( $wordlet->Cardinality ) ? $wordlet->Cardinality - count($wordlet->Values) : 10;
+	$max = ( $wordlet->Cardinality ) ? $wordlet->Cardinality - count($values) : 10;
 
 	for ( $i = 0; $i < $max; $i++ ) {
 		$form->values[] = null;

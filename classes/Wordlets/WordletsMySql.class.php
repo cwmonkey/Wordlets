@@ -282,12 +282,20 @@ class WordletsMySql extends WordletsBase {
 
 		// TODO: Fix this to use id's or something
 		// Remove old values
-		$delete_values_query = $this->pdo->prepare("DELETE FROM {$this->tablePrepend}val WHERE idx > :idx AND attr_id = :attr_id");
+		if ( $object->AttrId ) {
+			$delete_values_query = $this->pdo->prepare("DELETE FROM {$this->tablePrepend}val WHERE idx > :idx AND attr_id = :attr_id AND val_id = :val_id");
+		} else {
+			$delete_values_query = $this->pdo->prepare("DELETE FROM {$this->tablePrepend}val WHERE idx > :idx AND attr_id = :attr_id");
+		}
 		foreach ( $values as $val_id => $object_values ) {
 			foreach ( $object_values as $value ) {
 				foreach ( $value as $name => $val ) {
 					$attr_id = $attr_objs[$name]['id'];
-					$delete_values_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
+					if ( $object->AttrId ) {
+						$delete_values_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id, ':val_id' => $val_id));
+					} else {
+						$delete_values_query->execute(array(':idx' => $idx, ':attr_id' => $attr_id));
+					}
 				}
 			}
 		}

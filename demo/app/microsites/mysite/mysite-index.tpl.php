@@ -16,7 +16,7 @@
 				<? if ( $images = $school->Image ): ?>
 					<div class="images" <?=wa($images) ?>>
 						<? foreach ( $images as $image ): ?>
-							<div class="image" <?=wa($image) ?>>
+							<div class="image">
 								<img src="<?=$image->src ?>" width="<?=$image->width(false) ?>" height="<?=$image->height(false) ?>">
 							</div>
 						<? endforeach ?>

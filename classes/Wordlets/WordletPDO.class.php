@@ -7,7 +7,6 @@ class WordletPDO extends Wordlet {
 	public $Wordlets;
 	public $AttrId;
 	public $Id;
-	public $Instanced;
 	public $Cardinality;
 	public $ValueId;
 	public $InstanceValues;
@@ -16,6 +15,7 @@ class WordletPDO extends Wordlet {
 		'id' => null,
 		'instanced' => false,
 		'cardinality' => 1,
+		'attr_id' => null,
 	);
 
 	public function __construct($page, $name, array $params = array()) {
@@ -25,7 +25,7 @@ class WordletPDO extends Wordlet {
 		$this->Cardinality = $params['cardinality'];
 
 		if ( @$params['attr_id'] ) {
-			$this->Instanced = true;
+			$this->AttrId = $params['attr_id'];
 			$this->InstanceValues = $this->Values;
 			$this->Values = null;
 		}

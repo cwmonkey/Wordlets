@@ -3,7 +3,7 @@
 namespace Wordlets;
 
 // Extending Wordlet class to add site-specific functionality
-class WordletPDO extends \Wordlets\Wordlet {
+class WordletPDO extends Wordlet {
 	public $Wordlets;
 	public $AttrId;
 	public $Id;

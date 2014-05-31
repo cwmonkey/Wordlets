@@ -24,7 +24,7 @@ class WordletPDO extends Wordlet {
 		$this->Id = $params['id'];
 		$this->Cardinality = $params['cardinality'];
 
-		if ( $params['attr_id'] ) {
+		if ( @$params['attr_id'] ) {
 			$this->Instanced = true;
 			$this->InstanceValues = $this->Values;
 			$this->Values = null;
@@ -54,5 +54,23 @@ class WordletPDO extends Wordlet {
 		$value = $this->Value($value, $config);
 
 		return $value;
+	}
+
+	public function GetCurrent() {
+		if ( $this->Current ) {
+			$var = $this->Current;
+		} elseif ( $this->ValueId ) {
+			if ( isset($this->InstanceValues[0]) ) {
+				$var = $this->InstanceValues[0];
+			} else {
+				$var = null;
+			}
+		} elseif ( isset($this->Values[0]) ) {
+			$var = $this->Values[0];
+		} else {
+			$var = null;
+		}
+
+		return $var;
 	}
 }

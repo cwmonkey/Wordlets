@@ -89,7 +89,14 @@ class WordletsMySql extends WordletsBase {
 			}
 		}
 
-		$wordlet_object = $this->getWordlet($page, $object_row->name, $object_row->id, $attrs, $values, $this->showMarkup, $object_row->cardinality, $object_row->instanced);
+		$wordlet_object = $this->getWordlet($page, $object_row->name, array(
+			'id' => $object_row->id,
+			'attrs' => $attrs,
+			'values' => $values,
+			'show_markup' => $this->showMarkup,
+			'cardinality' => $object_row->cardinality,
+			'instanced' => $object_row->instanced,
+		));
 
 		return $wordlet_object;
 	}

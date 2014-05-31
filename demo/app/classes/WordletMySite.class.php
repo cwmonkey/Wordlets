@@ -1,11 +1,19 @@
 <?php
 
 // Extending Wordlet class to add site-specific functionality
-class WordletMySite extends \Wordlets\Wordlet {
+class WordletMySite extends \Wordlets\WordletPDO {
 	public $ShowEdit = false;
 	public $ShowConfigure = false;
-	public $Wordlets;
-	public $AttrId;
+
+	public $MySiteDefaultParams = array(
+		'show_markup' => true,
+	);
+
+	public function __construct($page, $name, array $params = array()) {
+		$params += $this->MySiteDefaultParams;
+		$params = parent::__construct($page, $name, $params);
+		$this->ShowMarkup = $params['show_markup'];
+	}
 
 	// Helper attributes for ajax
 	public function HtmlAttrs() {
@@ -86,8 +94,6 @@ class WordletMySite extends \Wordlets\Wordlet {
 	}
 
 	public function __call($name, $args = null) {
-		$value = parent::getValue($name, $args);
-
 		$show_markup = @$args[0];
 
 		if ( isset($this->Attrs[$name]) ) {
@@ -96,18 +102,10 @@ class WordletMySite extends \Wordlets\Wordlet {
 			$config = $this->DefaultConfig;
 		}
 
-		if ( @$config['instanced'] ) {
-			$value_id = ( $value ) ? $value['id'] : null;
-
-			$wordlet = $this->Wordlets->getOne($this->Name . ':' . $config['name'], true, $config['id'], $value_id);
-			return $wordlet;
-		}
-
-		$value = ( $value ) ? $value['value'] : $value;
-
-		$value = $this->Value($value, $config);
-
-		if ( $this->ShowMarkup && ($show_markup || ($show_markup === null && @$config['show_markup'])) ) {
+		$value = parent::__call($name, $args);
+		if ( !is_string($value) ) {
+			return $value;
+		} elseif ( $this->ShowMarkup && ($show_markup || ($show_markup === null && @$config['show_markup'])) ) {
 			return '<span ' . $this->HtmlAttrs() . '>'
 			. $value
 			. '</span>';

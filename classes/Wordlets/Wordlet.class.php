@@ -7,11 +7,7 @@ class Wordlet implements \Iterator, \Countable {
 	public $Attrs = array();
 	public $Page;
 	public $Name;
-	public $Id;
-	public $ShowMarkup;
-	public $Cardinality;
 	public $Configured = false;
-	public $Instanced = false;
 	public $ValueId;
 	public $InstanceValues;
 	public $Parent;
@@ -22,6 +18,15 @@ class Wordlet implements \Iterator, \Countable {
 		'order' => 0,
 		'instanced' => 0,
 		'show_markup' => 1,
+	);
+
+	public $DefaultParams = array(
+		'id' => null,
+		'attrs' => null,
+		'values' => null,
+		'show_markup' => null,
+		'cardinality' => null,
+		'instanced' => null,
 	);
 
 	// Countable
@@ -88,18 +93,20 @@ class Wordlet implements \Iterator, \Countable {
 	}
 
 	// The rest
-	public function __construct($page, $name, $id = null, $attrs = null, $values = null, $show_markup = false, $cardinality = 1, $instanced = false) {
+	public function __construct($page, $name, array $params = array()) {
 		$this->Page = $page;
 		$this->Name = $name;
-		$this->Id = $id;
-		$this->Attrs = $attrs;
-		$this->ShowMarkup = $show_markup;
-		$this->Cardinality = $cardinality;
-		$this->Instanced = $instanced;
+
+		$params += $this->DefaultParams;
+
+		$this->Attrs = $params['attrs'];
+		$values = $params['values'];
 
 		if ( is_array($values) ) $this->Values = $values;
 		$this->length = count($values);
-		if ( $attrs ) $this->Configured = true;
+		if ( $this->Attrs ) $this->Configured = true;
+
+		return $params;
 	}
 
 	public function __get($name) {
@@ -125,7 +132,6 @@ class Wordlet implements \Iterator, \Countable {
 
 	public function __toString() {
 		$values = $this->GetCurrent();
-
 		if ( is_array($values) ) {
 			foreach ( $values as $key => $value ) {
 				return $this->__get($key) . '';

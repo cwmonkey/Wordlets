@@ -53,7 +53,13 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 					}
 				}
 
-				if ( $set ) $values[$index][] = $value;
+				if ( $set ) {
+					if ( $index ) {
+						$values[$index][] = $value;
+					} else {
+						$values[] = $value;
+					}
+				}
 			}
 			$wordlet->Values = $values;
 			$wordlets->saveObject($wordlet, $wordlet->Cardinality);
@@ -242,6 +248,8 @@ if ( $action == 'configure' ) {
 	foreach( $values as $value ) {
 		$v = new stdClass();
 		foreach( $wordlet->Attrs as $name => $attr ) {
+			if ( $attr['instanced'] ) continue;
+
 			if ( isset($value[$name]) ) {
 				$v->{$name} = htmlspecialchars($value[$name]['value']);
 			} else {
@@ -258,6 +266,7 @@ if ( $action == 'configure' ) {
 	}
 
 	foreach ( $wordlet->Attrs as $attr ) {
+		if ( $attr['instanced'] ) continue;
 		$a = new stdClass();
 		foreach ( $attr as $key => $value ) {
 			$a->{$key} = htmlspecialchars($value);

@@ -123,27 +123,26 @@ if ( $id ) {
 	$wordlet = new \Wordlets\Wordlet(
 		$_GET['page'],
 		$_GET['name'],
-		null,
 		array(
-			'single' => array(
-				'name' => 'single',
-				'type' => 'single',
-				'instanced' => 0,
-				'html' => 'none',
-				'format' => 'none',
-				'info' => '',
-				'idx' => 0,
-				'show_markup' => 1,
-				'value' => '',
+			'attrs' => array(
+				'single' => array(
+					'name' => 'single',
+					'type' => 'single',
+					'instanced' => 0,
+					'html' => 'none',
+					'format' => 'none',
+					'info' => '',
+					'idx' => 0,
+					'show_markup' => 1,
+					'value' => '',
+				),
 			),
-		),
-		$values = array(
-			$index => array(
-				'single' => array('value' => 'This is a Title'),
+			'values' =>  array(
+				$index => array(
+					'single' => array('value' => 'This is a Title'),
+				),
 			),
-		),
-		false,
-		1
+		)
 	);
 }
 

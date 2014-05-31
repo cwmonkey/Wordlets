@@ -9,6 +9,8 @@ class WordletPDO extends Wordlet {
 	public $Id;
 	public $Instanced;
 	public $Cardinality;
+	public $ValueId;
+	public $InstanceValues;
 
 	public $PDODefaultParams = array(
 		'id' => null,
@@ -20,8 +22,13 @@ class WordletPDO extends Wordlet {
 		$params += $this->PDODefaultParams;
 		$params = parent::__construct($page, $name, $params);
 		$this->Id = $params['id'];
-		$this->Instanced = $params['instanced'];
 		$this->Cardinality = $params['cardinality'];
+
+		if ( $params['attr_id'] ) {
+			$this->Instanced = true;
+			$this->InstanceValues = $this->Values;
+			$this->Values = null;
+		}
 
 		return $params;
 	}

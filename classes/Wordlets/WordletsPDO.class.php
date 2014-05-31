@@ -22,6 +22,22 @@ class WordletsPDO extends WordletsBase {
 		return $rows;
 	}
 
+	public function getOne($name, $echo = true, $attr_id = null, $value_id = null) {
+		$wordlet = parent::getOne($name, $echo);
+
+		$wordlet->AttrId = $attr_id;
+		$wordlet->ValueId = $value_id;
+		if ( $value_id ) {
+			$wordlet->Values = ( isset($wordlet->InstanceValues[$value_id]) ) ? $wordlet->InstanceValues[$value_id] : array();
+		}
+
+		return $wordlet;
+	}
+
+	public function getWordlet($page, $name, array $params = array()) {
+		return new WordletPDO($page, $name, $params);
+	}
+
 	// Grab the wordlet objects/values from the db and store them in $this->pages
 	public function loadObjects() {
 		$func_get_args = func_get_args();
@@ -95,7 +111,7 @@ class WordletsPDO extends WordletsBase {
 			'values' => $values,
 			'show_markup' => $this->showMarkup,
 			'cardinality' => $object_row->cardinality,
-			'instanced' => $object_row->instanced,
+			'attr_id' => $object_row->attr_id,
 		));
 
 		return $wordlet_object;

@@ -14,14 +14,7 @@ class WordletsMySite extends \Wordlets\WordletsPDO {
 	}
 
 	public function getOne($name, $echo = true, $attr_id = null, $value_id = null) {
-		$wordlet = parent::getOne($name, $echo);
-		$wordlet->AttrId = $attr_id;
-		$wordlet->ValueId = $value_id;
-		if ( $value_id ) {
-			$wordlet->InstanceValues = ( isset($wordlet->Values[$value_id]) ) ? $wordlet->Values[$value_id] : array();
-		} else {
-			$wordlet->InstanceValues = null;
-		}
+		$wordlet = parent::getOne($name, $echo, $attr_id, $value_id);
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';

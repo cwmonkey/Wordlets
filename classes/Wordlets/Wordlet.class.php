@@ -8,8 +8,6 @@ class Wordlet implements \Iterator, \Countable {
 	public $Page;
 	public $Name;
 	public $Configured = false;
-	public $ValueId;
-	public $InstanceValues;
 	public $Parent;
 
 	public $DefaultConfig = array(
@@ -31,63 +29,31 @@ class Wordlet implements \Iterator, \Countable {
 
 	// Countable
 	public function count() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		$var = count($values);
-		return $var;
+		return count($this->Values);
 	}
 
 	// Iterator
 	public $Current = null;
 	public function rewind() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		reset($values);
+		reset($this->Values);
 	}
 
 	public function current() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		$this->Current = current($values);
+		$this->Current = current($this->Values);
 		return $this;
 	}
 
 	public function key() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		$var = key($values);
-		return $var;
+		return key($this->Values);
 	}
 
 	public function next() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		$this->Current = next($values);
+		$this->Current = next($this->Values);
 		return $this;
 	}
 
 	public function valid() {
-		if ( $this->ValueId ) {
-			$values =& $this->InstanceValues;
-		} else {
-			$values =& $this->Values;
-		}
-		$key = key($values);
+		$key = key($this->Values);
 		$var = ($key !== NULL && $key !== FALSE);
 		return $var;
 	}

@@ -15,6 +15,7 @@ class WordletsMySite extends \Wordlets\WordletsPDO {
 
 	public function getOne($name, $echo = true, $attr_id = null, $value_id = null) {
 		$wordlet = parent::getOne($name, $echo, $attr_id, $value_id);
+		if ( !$echo ) $wordlet->ShowMarkup = false;
 
 		if ( $this->showMarkup && !$wordlet->Configured && $echo ) {
 			echo '<span ' . $wordlet->HtmlAttrs() . '></span>';

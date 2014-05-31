@@ -1,17 +1,23 @@
 [data-wordlet] {
     outline: 4px dotted rgba(255, 0, 0, .5) !important;
     outline-offset: -2px;
-    display: inherit;
     min-height: 10px;
+}
+
+[data-wordlet].wordlet-has-block {
+    display: inherit;
+}
+
+[data-wordlet]:focus {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
 }
 
 [data-wordlet]:hover {
     position: relative;
 }
 
-[data-wordlet] .wordlet_links:focus,
-[data-wordlet] .wordlet_links:active,
-[data-wordlet]:hover .wordlet_links {
+.wordlet_links:focus,
+.wordlet_links:active {
     clip: auto;
     height: auto;
     margin: 0;
@@ -35,16 +41,28 @@
 	content: "Add " attr(data-wordlet-name);
 }
 
-[data-wordlet] .wordlet_links a {
+.wordlet_links {
+    background: #fff !important;
+    outline: 4px dotted rgba(255, 255, 255, 1) !important;
+    outline-offset: -2px;
+    padding: 2px;
+}
+
+.wordlet_links a {
     text-decoration: underline !important;
     display: block !important;
     text-align: left !important;
     white-space: nowrap !important;
 }
 
-[data-wordlet] .wordlet_links a:hover,
-[data-wordlet] .wordlet_links a:focus {
+.wordlet_links a:hover,
+.wordlet_links a:focus {
     background: yellow !important;
+}
+
+.wordlet_links .wordlets_other_links {
+    margin-top: 1em !important;
+    display: block !important;
 }
 
 .wordlet-edit {
@@ -59,7 +77,7 @@
  * Hide only visually, but have it available for screenreaders: h5bp.com/v
  */
 
-.wordlet_links {
+/*.wordlet_links {
     border: 0;
     clip: rect(0 0 0 0);
     height: 1px;
@@ -68,4 +86,4 @@
     padding: 0;
     position: absolute;
     width: 1px;
-}
+}*/

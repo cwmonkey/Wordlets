@@ -200,6 +200,7 @@ $body
 		e.preventDefault();
 		e.stopPropagation();
 		$.wordlets.open(href);
+		_close_menu();
 	})
 	;
 

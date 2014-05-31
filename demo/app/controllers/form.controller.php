@@ -61,7 +61,12 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 					}
 				}
 			}
-			$wordlet->Values = $values;
+			if ( $val_id ) {
+				$wordlet->InstanceValues = $values;
+			} else {
+				$wordlet->Values = $values;
+
+			}
 			$wordlets->saveObject($wordlet, $wordlet->Cardinality);
 		}
 	// Add a new wordlet
@@ -239,7 +244,7 @@ if ( $action == 'configure' ) {
 	$form->id = $id;
 
 	if ( $val_id ) {
-		$values = isset($wordlet->Values[$val_id]) ? $wordlet->Values[$val_id] : array();
+		$values = isset($wordlet->InstanceValues[$val_id]) ? $wordlet->InstanceValues[$val_id] : array();
 	} else {
 		$values = $wordlet->Values;
 	}

@@ -3,7 +3,7 @@
 namespace Wordlets;
 
 class Wordlet implements \Iterator, \Countable {
-	public $values = array();
+	public $Values = array();
 	public $Attrs = array();
 	public $Page;
 	public $Name;

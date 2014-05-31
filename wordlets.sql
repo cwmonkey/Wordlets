@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 29, 2014 at 06:45 AM
+-- Generation Time: May 31, 2014 at 08:28 PM
 -- Server version: 5.6.12-log
 -- PHP Version: 5.4.12
 
@@ -32,16 +32,14 @@ DROP TABLE IF EXISTS `wordlet_attr`;
 CREATE TABLE IF NOT EXISTS `wordlet_attr` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `object_id` int(11) NOT NULL,
-  `instance_object_id` int(11) DEFAULT NULL,
-  `instanced` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(64) NOT NULL,
   `idx` int(11) NOT NULL,
-  `type` varchar(64) NOT NULL,
+  `info` text NOT NULL,
+  `instanced` tinyint(1) NOT NULL DEFAULT '0',
   `html` varchar(32) NOT NULL,
   `format` varchar(32) NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `info` text NOT NULL,
+  `type` varchar(64) NOT NULL,
   `show_markup` tinyint(1) NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
@@ -55,9 +53,8 @@ DROP TABLE IF EXISTS `wordlet_object`;
 CREATE TABLE IF NOT EXISTS `wordlet_object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` int(11) NOT NULL,
-  `instanced` tinyint(1) NOT NULL DEFAULT '0',
-  `attr_id` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
+  `attr_id` int(11) DEFAULT NULL,
   `cardinality` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `page_id` (`page_id`),
@@ -73,11 +70,9 @@ CREATE TABLE IF NOT EXISTS `wordlet_object` (
 DROP TABLE IF EXISTS `wordlet_page`;
 CREATE TABLE IF NOT EXISTS `wordlet_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `page_id` int(11) DEFAULT NULL,
   `name` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `page_id` (`page_id`)
+  KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
@@ -90,16 +85,13 @@ DROP TABLE IF EXISTS `wordlet_val`;
 CREATE TABLE IF NOT EXISTS `wordlet_val` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `attr_id` int(11) NOT NULL,
-  `object_id` int(11) DEFAULT NULL,
-  `val_id` int(11) DEFAULT NULL,
   `idx` int(11) NOT NULL,
   `value` text NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `val_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `object_id` (`object_id`),
   KEY `val_id` (`val_id`),
   KEY `attr_id` (`attr_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=86 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=110 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -2,7 +2,7 @@
 
 namespace Wordlets;
 
-class WordletsMySql extends WordletsBase {
+class WordletsPDO extends WordletsBase {
 	private $pdo;
 	private $tablePrepend;
 	private $pageQuery;

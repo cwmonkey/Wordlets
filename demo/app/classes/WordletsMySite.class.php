@@ -1,7 +1,7 @@
 <?php
 
 // Extending Wordlets to add Edit/Cinfigure flags
-class WordletsMySite extends \Wordlets\WordletsMySql {
+class WordletsMySite extends \Wordlets\WordletsPDO {
 	public $ShowEdit = false;
 	public $ShowConfigure = false;
 

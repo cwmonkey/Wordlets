@@ -4,6 +4,8 @@
 class WordletMySite extends \Wordlets\WordletPDO {
 	public $ShowEdit = false;
 	public $ShowConfigure = false;
+	public $ShowMarkup;
+	public $_ShowMarkup;
 
 	public $MySiteDefaultParams = array(
 		'show_markup' => true,
@@ -13,6 +15,7 @@ class WordletMySite extends \Wordlets\WordletPDO {
 		$params += $this->MySiteDefaultParams;
 		$params = parent::__construct($page, $name, $params);
 		$this->ShowMarkup = $params['show_markup'];
+		$this->_ShowMarkup = $params['show_markup'];
 	}
 
 	// Helper attributes for ajax
